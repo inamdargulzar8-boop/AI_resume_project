@@ -33,11 +33,16 @@ app.secret_key = os.environ.get("SECRET_KEY")
 # TESSERACT / POPPLER
 # =========================================================
 
-pytesseract.pytesseract.tesseract_cmd = (
-    r"C:\Program Files\Tesseract-OCR\tesseract.exe"
-)
+import shutil
 
-POPPLER_PATH = r"C:\poppler-26.02.0\Library\bin"
+if os.name == "nt":
+    pytesseract.pytesseract.tesseract_cmd = (
+        r"C:\Program Files\Tesseract-OCR\tesseract.exe"
+    )
+    POPPLER_PATH = r"C:\poppler-26.02.0\Library\bin"
+else:
+    pytesseract.pytesseract.tesseract_cmd = "tesseract"
+    POPPLER_PATH = None
 
 
 # =========================================================
