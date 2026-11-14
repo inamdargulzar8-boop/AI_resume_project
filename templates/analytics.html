@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<title>Recruiter Analytics Panel</title>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial,sans-serif;
+}
+
+body{
+    background:#081120;
+    color:white;
+    overflow-x:hidden;
+}
+
+.navbar{
+    width:100%;
+    padding:15px 35px;
+    background:#111827;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.logo{
+    font-size:24px;
+    font-weight:bold;
+    color:#38bdf8;
+}
+
+.menu{
+    display:flex;
+    gap:12px;
+}
+
+.menu a{
+    text-decoration:none;
+    color:white;
+    padding:8px 14px;
+    border-radius:10px;
+    background:#2563eb;
+    font-size:14px;
+}
+
+.header{
+    padding:35px 8%;
+    background:linear-gradient(
+        135deg,
+        #0f172a,
+        #1e3a8a,
+        #7c3aed
+    );
+}
+
+.header h1{
+    font-size:34px;
+    margin-bottom:8px;
+}
+
+.header p{
+    color:#dbeafe;
+    font-size:14px;
+}
+
+.container{
+    width:92%;
+    margin:auto;
+    margin-top:25px;
+    padding-bottom:30px;
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+    gap:18px;
+    margin-bottom:25px;
+}
+
+.stat-card{
+    background:rgba(255,255,255,0.08);
+    border-radius:18px;
+    padding:18px;
+}
+
+.stat-card h3{
+    color:#93c5fd;
+    margin-bottom:10px;
+    font-size:15px;
+}
+
+.stat-card p{
+    font-size:26px;
+    font-weight:bold;
+}
+
+.charts{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(320px,1fr));
+    gap:20px;
+}
+
+.chart-box{
+    background:rgba(255,255,255,0.08);
+    border-radius:20px;
+    padding:18px;
+}
+
+.chart-box h2{
+    margin-bottom:12px;
+    font-size:18px;
+}
+
+canvas{
+    height:220px !important;
+}
+
+.table-box{
+    margin-top:25px;
+    background:rgba(255,255,255,0.08);
+    border-radius:20px;
+    padding:20px;
+    overflow-x:auto;
+}
+
+.table-box h2{
+    margin-bottom:18px;
+    font-size:20px;
+}
+
+table{
+    width:100%;
+    border-collapse:collapse;
+}
+
+th{
+    background:#1e293b;
+    padding:12px;
+    color:#93c5fd;
+    text-align:left;
+    font-size:13px;
+}
+
+td{
+    padding:12px;
+    border-bottom:1px solid #334155;
+    font-size:13px;
+}
+
+.selected{
+    color:#22c55e;
+    font-weight:bold;
+}
+
+.review{
+    color:#facc15;
+    font-weight:bold;
+}
+
+.rejected{
+    color:#ef4444;
+    font-weight:bold;
+}
+
+</style>
+
+</head>
+
+<body>
+
+
+<!-- NAVBAR -->
+
+<div class="navbar">
+
+    <div class="logo">
+        AI Resume Analyzer
+    </div>
+
+    <div class="menu">
+
+        <a href="/">Home</a>
+
+        <a href="/admin">Admin</a>
+
+        <a href="/matching">Matching</a>
+
+    </div>
+
+</div>
+
+
+<!-- HEADER -->
+
+<div class="header">
+
+    <h1>Recruiter Analytics Panel</h1>
+
+    <p>
+        Advanced hiring insights and recruitment analytics dashboard
+    </p>
+
+</div>
+
+
+<!-- MAIN -->
+
+<div class="container">
+
+
+    <!-- STATISTICS -->
+
+    <div class="stats">
+
+        <div class="stat-card">
+
+            <h3>Total Candidates</h3>
+
+            <p>{{ total_candidates }}</p>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <h3>Selected</h3>
+
+            <p>{{ selected }}</p>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <h3>Hiring Rate</h3>
+
+            <p>{{ hiring_rate }}%</p>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <h3>Average ATS</h3>
+
+            <p>{{ average_ats }}%</p>
+
+        </div>
+
+    </div>
+
+
+    <!-- CHARTS -->
+
+    <div class="charts">
+
+
+        <div class="chart-box">
+
+            <h2>ATS Performance</h2>
+
+            <canvas id="hiringChart"></canvas>
+
+        </div>
+
+
+        <div class="chart-box">
+
+            <h2>Candidate ATS Scores</h2>
+
+            <canvas id="skillChart"></canvas>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- CANDIDATE TABLE -->
+
+    <div class="table-box">
+
+        <h2>Candidate Analytics</h2>
+
+        <table>
+
+            <tr>
+
+                <th>Name</th>
+
+                <th>ATS Score</th>
+
+                <th>Skills</th>
+
+                <th>Status</th>
+
+            </tr>
+
+
+            {% for candidate in analytics_data %}
+
+            <tr>
+
+                <!-- NAME -->
+
+                <td>
+                    {{ candidate[1] }}
+                </td>
+
+
+                <!-- ATS SCORE -->
+
+                <td>
+                    {{ candidate[6] }}%
+                </td>
+
+
+                <!-- SKILLS -->
+
+                <td>
+                    {{ candidate[5] }}
+                </td>
+
+
+                <!-- REAL DATABASE STATUS -->
+
+                <td>
+
+                    {% if candidate[8] == "Selected" %}
+
+                        <span class="selected">
+                            Selected
+                        </span>
+
+                    {% elif candidate[8] == "Review" %}
+
+                        <span class="review">
+                            Review
+                        </span>
+
+                    {% else %}
+
+                        <span class="rejected">
+                            Rejected
+                        </span>
+
+                    {% endif %}
+
+                </td>
+
+            </tr>
+
+            {% endfor %}
+
+        </table>
+
+    </div>
+
+</div>
+
+
+<!-- CHART JS -->
+
+<script>
+
+
+/* ATS PERFORMANCE CHART */
+
+const hiringCtx =
+    document.getElementById('hiringChart');
+
+
+new Chart(hiringCtx, {
+
+    type:'line',
+
+    data:{
+
+        labels:[
+
+            {% for candidate in analytics_data %}
+
+                '{{ candidate[1] }}',
+
+            {% endfor %}
+
+        ],
+
+
+        datasets:[{
+
+            label:'ATS Score',
+
+            data:[
+
+                {% for candidate in analytics_data %}
+
+                    {{ candidate[6] }},
+
+                {% endfor %}
+
+            ],
+
+            borderColor:'#38bdf8',
+
+            backgroundColor:'rgba(56,189,248,0.2)',
+
+            fill:true,
+
+            tension:0.4
+
+        }]
+
+    }
+
+});
+
+
+/* CANDIDATE ATS BAR CHART */
+
+const skillCtx =
+    document.getElementById('skillChart');
+
+
+new Chart(skillCtx, {
+
+    type:'bar',
+
+    data:{
+
+        labels:[
+
+            {% for candidate in analytics_data %}
+
+                '{{ candidate[1] }}',
+
+            {% endfor %}
+
+        ],
+
+
+        datasets:[{
+
+            label:'ATS Score',
+
+            data:[
+
+                {% for candidate in analytics_data %}
+
+                    {{ candidate[6] }},
+
+                {% endfor %}
+
+            ],
+
+            backgroundColor:[
+
+                '#38bdf8',
+                '#2563eb',
+                '#7c3aed',
+                '#06b6d4',
+                '#22c55e',
+                '#f97316'
+
+            ]
+
+        }]
+
+    }
+
+});
+
+
+</script>
+
+
+</body>
+
+</html>

@@ -1,0 +1,8 @@
+.env
+resume.db
+uploads/
+reports/
+__pycache__/
+*.pyc
+venv/
+.venv/

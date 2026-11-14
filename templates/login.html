@@ -1,0 +1,1959 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+
+```
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Login - AI Resume Analyzer</title>
+
+<style>
+
+    /* =========================================================
+       GLOBAL
+    ========================================================= */
+
+    :root {
+        --bg: #07111f;
+        --bg-soft: #0b1727;
+        --card: rgba(13, 27, 45, 0.94);
+        --border: rgba(148, 163, 184, 0.15);
+
+        --text: #f8fafc;
+        --muted: #94a3b8;
+        --muted-light: #cbd5e1;
+
+        --blue: #2563eb;
+        --cyan: #38bdf8;
+        --blue-light: #60a5fa;
+        --purple: #7c3aed;
+        --green: #4ade80;
+
+        --radius: 20px;
+    }
+
+
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+    }
+
+
+    html {
+        scroll-behavior: smooth;
+    }
+
+
+    body {
+
+        min-height: 100vh;
+
+        font-family:
+            Arial,
+            Helvetica,
+            sans-serif;
+
+        color: var(--text);
+
+        background:
+            radial-gradient(
+                circle at 10% 15%,
+                rgba(37, 99, 235, 0.13),
+                transparent 28%
+            ),
+            radial-gradient(
+                circle at 90% 80%,
+                rgba(124, 58, 237, 0.10),
+                transparent 28%
+            ),
+            var(--bg);
+
+        overflow-x: hidden;
+    }
+
+
+    /* =========================================================
+       BACKGROUND
+    ========================================================= */
+
+    .background-grid {
+
+        position: fixed;
+
+        inset: 0;
+
+        pointer-events: none;
+
+        z-index: 0;
+
+        opacity: 0.20;
+
+        background-image:
+
+            linear-gradient(
+                rgba(148, 163, 184, 0.025) 1px,
+                transparent 1px
+            ),
+
+            linear-gradient(
+                90deg,
+                rgba(148, 163, 184, 0.025) 1px,
+                transparent 1px
+            );
+
+        background-size: 55px 55px;
+    }
+
+
+    .orb {
+
+        position: fixed;
+
+        border-radius: 50%;
+
+        pointer-events: none;
+
+        z-index: 0;
+
+        filter: blur(2px);
+    }
+
+
+    .orb-one {
+
+        width: 430px;
+        height: 430px;
+
+        top: -220px;
+        right: -130px;
+
+        background:
+            radial-gradient(
+                circle,
+                rgba(56, 189, 248, 0.13),
+                transparent 68%
+            );
+
+        animation:
+            floatOne 10s ease-in-out infinite;
+    }
+
+
+    .orb-two {
+
+        width: 390px;
+        height: 390px;
+
+        bottom: -210px;
+        left: -140px;
+
+        background:
+            radial-gradient(
+                circle,
+                rgba(124, 58, 237, 0.11),
+                transparent 68%
+            );
+
+        animation:
+            floatTwo 12s ease-in-out infinite;
+    }
+
+
+    @keyframes floatOne {
+
+        0%,
+        100% {
+            transform: translate(0, 0);
+        }
+
+        50% {
+            transform: translate(-25px, 25px);
+        }
+    }
+
+
+    @keyframes floatTwo {
+
+        0%,
+        100% {
+            transform: translate(0, 0);
+        }
+
+        50% {
+            transform: translate(25px, -20px);
+        }
+    }
+
+
+    /* =========================================================
+       PAGE
+    ========================================================= */
+
+    .auth-page {
+
+        min-height: 100vh;
+
+        display: flex;
+
+        flex-direction: column;
+
+        position: relative;
+
+        z-index: 1;
+    }
+
+
+    /* =========================================================
+       NAVBAR
+    ========================================================= */
+
+    .navbar {
+
+        height: 70px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: space-between;
+
+        padding: 0 40px;
+
+        background:
+            rgba(7, 17, 31, 0.82);
+
+        border-bottom:
+            1px solid var(--border);
+
+        backdrop-filter: blur(18px);
+
+        -webkit-backdrop-filter: blur(18px);
+
+        position: relative;
+
+        z-index: 10;
+
+        animation:
+            navbarEnter 0.6s ease both;
+    }
+
+
+    @keyframes navbarEnter {
+
+        from {
+            opacity: 0;
+            transform: translateY(-15px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+
+    /* =========================================================
+       LOGO
+    ========================================================= */
+
+    .logo {
+
+        color: white;
+
+        text-decoration: none;
+
+        font-size: 22px;
+
+        font-weight: 700;
+
+        letter-spacing: -0.5px;
+
+        position: relative;
+    }
+
+
+    .logo span {
+        color: var(--cyan);
+    }
+
+
+    .logo::after {
+
+        content: "";
+
+        position: absolute;
+
+        left: 0;
+
+        bottom: -7px;
+
+        width: 34px;
+
+        height: 2px;
+
+        border-radius: 5px;
+
+        background:
+            linear-gradient(
+                90deg,
+                var(--cyan),
+                transparent
+            );
+    }
+
+
+    /* =========================================================
+       HOME
+    ========================================================= */
+
+    .home-link {
+
+        color: #cbd5e1;
+
+        text-decoration: none;
+
+        font-size: 13px;
+
+        font-weight: 600;
+
+        padding: 9px 14px;
+
+        border-radius: 9px;
+
+        border:
+            1px solid transparent;
+
+        transition:
+            0.25s ease;
+    }
+
+
+    .home-link:hover {
+
+        color: white;
+
+        background:
+            rgba(30, 41, 59, 0.75);
+
+        border-color:
+            var(--border);
+
+        transform:
+            translateY(-2px);
+    }
+
+
+    /* =========================================================
+       MAIN
+    ========================================================= */
+
+    .auth-container {
+
+        flex: 1;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        padding: 50px 20px 35px;
+
+        position: relative;
+    }
+
+
+    .center-glow {
+
+        position: absolute;
+
+        width: 500px;
+        height: 500px;
+
+        border-radius: 50%;
+
+        background:
+            radial-gradient(
+                circle,
+                rgba(37, 99, 235, 0.10),
+                transparent 68%
+            );
+
+        pointer-events: none;
+
+        animation:
+            centerPulse 6s ease-in-out infinite;
+    }
+
+
+    @keyframes centerPulse {
+
+        0%,
+        100% {
+            transform: scale(0.90);
+            opacity: 0.5;
+        }
+
+        50% {
+            transform: scale(1.08);
+            opacity: 0.9;
+        }
+    }
+
+
+    /* =========================================================
+       CARD
+    ========================================================= */
+
+    .auth-card {
+
+        width: 100%;
+
+        max-width: 455px;
+
+        padding: 34px;
+
+        background:
+            linear-gradient(
+                145deg,
+                rgba(18, 34, 55, 0.94),
+                rgba(8, 20, 35, 0.96)
+            );
+
+        border:
+            1px solid var(--border);
+
+        border-radius:
+            var(--radius);
+
+        box-shadow:
+            0 30px 80px rgba(0, 0, 0, 0.40);
+
+        position: relative;
+
+        overflow: hidden;
+
+        animation:
+            cardEnter 0.75s cubic-bezier(.2,.8,.2,1) both;
+
+        /* VERY IMPORTANT:
+           keeps the card itself above decorations */
+        z-index: 2;
+    }
+
+
+    @keyframes cardEnter {
+
+        from {
+            opacity: 0;
+
+            transform:
+                translateY(28px)
+                scale(0.97);
+        }
+
+        to {
+            opacity: 1;
+
+            transform:
+                translateY(0)
+                scale(1);
+        }
+    }
+
+
+    /* Decorative glow */
+
+    .auth-card::before {
+
+        content: "";
+
+        position: absolute;
+
+        width: 230px;
+        height: 230px;
+
+        top: -160px;
+        right: -100px;
+
+        border-radius: 50%;
+
+        background:
+            radial-gradient(
+                circle,
+                rgba(56, 189, 248, 0.15),
+                transparent 70%
+            );
+
+        /* IMPORTANT */
+        pointer-events: none;
+
+        z-index: 0;
+    }
+
+
+    .auth-card::after {
+
+        content: "";
+
+        position: absolute;
+
+        width: 190px;
+        height: 190px;
+
+        bottom: -130px;
+        left: -100px;
+
+        border-radius: 50%;
+
+        background:
+            radial-gradient(
+                circle,
+                rgba(124, 58, 237, 0.12),
+                transparent 70%
+            );
+
+        /* IMPORTANT */
+        pointer-events: none;
+
+        z-index: 0;
+    }
+
+
+    /* Keep all card content above decorations */
+
+    .auth-card > * {
+
+        position: relative;
+
+        z-index: 1;
+    }
+
+
+    /* =========================================================
+       ICON
+    ========================================================= */
+
+    .auth-icon {
+
+        width: 58px;
+        height: 58px;
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        margin-bottom: 20px;
+
+        border-radius: 17px;
+
+        background:
+            linear-gradient(
+                135deg,
+                var(--blue),
+                var(--cyan)
+            );
+
+        box-shadow:
+            0 12px 30px
+            rgba(37, 99, 235, 0.28);
+
+        font-size: 24px;
+
+        animation:
+            iconFloat 4s ease-in-out infinite;
+    }
+
+
+    @keyframes iconFloat {
+
+        0%,
+        100% {
+            transform: translateY(0);
+        }
+
+        50% {
+            transform: translateY(-4px);
+        }
+    }
+
+
+    /* =========================================================
+       TITLE
+    ========================================================= */
+
+    .auth-card h1 {
+
+        font-size: 30px;
+
+        line-height: 1.15;
+
+        letter-spacing: -0.8px;
+
+        margin: 0;
+    }
+
+
+    .auth-subtitle {
+
+        margin:
+            9px 0 25px;
+
+        color:
+            var(--muted);
+
+        font-size: 13px;
+
+        line-height: 1.65;
+    }
+
+
+    /* =========================================================
+       TABS
+    ========================================================= */
+
+    .mode-buttons {
+
+        display: grid;
+
+        grid-template-columns:
+            1fr 1fr;
+
+        gap: 5px;
+
+        padding: 5px;
+
+        margin-bottom: 24px;
+
+        background:
+            rgba(4, 13, 25, 0.75);
+
+        border:
+            1px solid var(--border);
+
+        border-radius: 12px;
+    }
+
+
+    .mode-button {
+
+        border: none;
+
+        background: transparent;
+
+        color:
+            var(--muted);
+
+        padding: 11px;
+
+        border-radius: 8px;
+
+        font-size: 13px;
+
+        font-weight: 700;
+
+        cursor: pointer;
+
+        transition:
+            0.25s ease;
+
+        /* IMPORTANT */
+        position: relative;
+
+        z-index: 5;
+    }
+
+
+    .mode-button:hover {
+
+        color: white;
+
+        background:
+            rgba(51, 65, 85, 0.35);
+    }
+
+
+    .mode-button.active {
+
+        color: white;
+
+        background:
+            linear-gradient(
+                135deg,
+                var(--blue),
+                #3b82f6
+            );
+
+        box-shadow:
+            0 6px 18px
+            rgba(37, 99, 235, 0.24);
+    }
+
+
+    /* =========================================================
+       FORM
+    ========================================================= */
+
+    .form-group {
+
+        margin-bottom: 17px;
+
+        animation:
+            formEnter 0.35s ease both;
+    }
+
+
+    @keyframes formEnter {
+
+        from {
+            opacity: 0;
+            transform: translateY(7px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+
+    .form-group label {
+
+        display: block;
+
+        margin-bottom: 8px;
+
+        color:
+            var(--muted-light);
+
+        font-size: 12px;
+
+        font-weight: 700;
+    }
+
+
+    .input-wrapper {
+
+        position: relative;
+
+        width: 100%;
+    }
+
+
+    .input-icon {
+
+        position: absolute;
+
+        left: 14px;
+
+        top: 50%;
+
+        transform:
+            translateY(-50%);
+
+        color:
+            #64748b;
+
+        font-size: 14px;
+
+        pointer-events: none;
+
+        z-index: 2;
+
+        transition:
+            0.25s ease;
+    }
+
+
+    .form-group input {
+
+        width: 100%;
+
+        height: 47px;
+
+        padding:
+            0 50px 0 41px;
+
+        background:
+            rgba(4, 13, 25, 0.78);
+
+        color:
+            #f8fafc;
+
+        border:
+            1px solid
+            rgba(71, 85, 105, 0.70);
+
+        border-radius: 10px;
+
+        outline: none;
+
+        font-size: 13px;
+
+        transition:
+            0.25s ease;
+    }
+
+
+    .form-group input::placeholder {
+
+        color:
+            #64748b;
+    }
+
+
+    .form-group input:hover {
+
+        border-color:
+            rgba(96, 165, 250, 0.35);
+    }
+
+
+    .form-group input:focus {
+
+        border-color:
+            var(--blue-light);
+
+        background:
+            rgba(8, 22, 39, 0.92);
+
+        box-shadow:
+            0 0 0 3px
+            rgba(96, 165, 250, 0.09),
+
+            0 8px 22px
+            rgba(0, 0, 0, 0.12);
+    }
+
+
+    .input-wrapper:focus-within
+    .input-icon {
+
+        color:
+            var(--cyan);
+
+        transform:
+            translateY(-50%) scale(1.08);
+    }
+
+
+    /* =========================================================
+       PASSWORD
+    ========================================================= */
+
+    .password-row {
+
+        position: relative;
+    }
+
+
+    .show-password {
+
+        position: absolute;
+
+        right: 9px;
+
+        top: 50%;
+
+        transform:
+            translateY(-50%);
+
+        border: none;
+
+        background:
+            rgba(30, 41, 59, 0.60);
+
+        color:
+            #94a3b8;
+
+        font-size: 11px;
+
+        cursor: pointer;
+
+        padding:
+            5px 8px;
+
+        border-radius: 6px;
+
+        z-index: 5;
+
+        transition:
+            0.2s ease;
+    }
+
+
+    .show-password:hover {
+
+        color: white;
+
+        background:
+            rgba(37, 99, 235, 0.25);
+    }
+
+
+    /* =========================================================
+       PASSWORD STRENGTH
+    ========================================================= */
+
+    .password-strength {
+
+        display: none;
+
+        margin-top: 8px;
+    }
+
+
+    .strength-bar {
+
+        width: 100%;
+
+        height: 3px;
+
+        border-radius: 10px;
+
+        overflow: hidden;
+
+        background:
+            rgba(71, 85, 105, 0.45);
+    }
+
+
+    .strength-fill {
+
+        width: 0%;
+
+        height: 100%;
+
+        border-radius: 10px;
+
+        transition:
+            width 0.3s ease;
+    }
+
+
+    .strength-text {
+
+        margin-top: 5px;
+
+        font-size: 10px;
+
+        color:
+            #64748b;
+    }
+
+
+    /* =========================================================
+       MAIN BUTTON
+    ========================================================= */
+
+    .auth-button {
+
+        width: 100%;
+
+        height: 47px;
+
+        margin-top: 4px;
+
+        border: none;
+
+        border-radius: 10px;
+
+        background:
+            linear-gradient(
+                135deg,
+                var(--blue),
+                var(--cyan)
+            );
+
+        color: white;
+
+        font-size: 14px;
+
+        font-weight: 700;
+
+        cursor: pointer;
+
+        position: relative;
+
+        overflow: hidden;
+
+        z-index: 5;
+
+        box-shadow:
+            0 10px 26px
+            rgba(37, 99, 235, 0.23);
+
+        transition:
+            0.25s ease;
+    }
+
+
+    .auth-button::before {
+
+        content: "";
+
+        position: absolute;
+
+        top: 0;
+
+        left: -120%;
+
+        width: 100%;
+
+        height: 100%;
+
+        background:
+            linear-gradient(
+                90deg,
+                transparent,
+                rgba(255,255,255,0.20),
+                transparent
+            );
+
+        transition:
+            left 0.55s ease;
+    }
+
+
+    .auth-button:hover::before {
+
+        left: 120%;
+    }
+
+
+    .auth-button:hover {
+
+        transform:
+            translateY(-2px);
+
+        box-shadow:
+            0 15px 35px
+            rgba(37, 99, 235, 0.32);
+
+        filter:
+            brightness(1.06);
+    }
+
+
+    .auth-button:active {
+
+        transform:
+            translateY(0);
+    }
+
+
+    /* =========================================================
+       SWITCH
+    ========================================================= */
+
+    .switch-text {
+
+        margin-top: 21px;
+
+        padding-top: 18px;
+
+        border-top:
+            1px solid var(--border);
+
+        text-align: center;
+
+        color:
+            #64748b;
+
+        font-size: 12px;
+    }
+
+
+    .switch-link {
+
+        border: none;
+
+        background: transparent;
+
+        color:
+            var(--blue-light);
+
+        font-size: 12px;
+
+        font-weight: 700;
+
+        cursor: pointer;
+
+        padding: 0;
+
+        margin-left: 3px;
+
+        position: relative;
+
+        z-index: 5;
+
+        transition:
+            0.2s ease;
+    }
+
+
+    .switch-link:hover {
+
+        color:
+            var(--cyan);
+
+        text-decoration:
+            underline;
+    }
+
+
+    /* =========================================================
+       SECURITY
+    ========================================================= */
+
+    .security-note {
+
+        display: flex;
+
+        align-items: center;
+
+        justify-content: center;
+
+        gap: 6px;
+
+        margin-top: 18px;
+
+        color:
+            #64748b;
+
+        font-size: 10px;
+    }
+
+
+    .security-dot {
+
+        width: 6px;
+
+        height: 6px;
+
+        border-radius: 50%;
+
+        background:
+            var(--green);
+
+        box-shadow:
+            0 0 10px
+            rgba(74, 222, 128, 0.55);
+
+        animation:
+            securityPulse 2s ease-in-out infinite;
+    }
+
+
+    @keyframes securityPulse {
+
+        0%,
+        100% {
+            opacity: 0.5;
+        }
+
+        50% {
+            opacity: 1;
+        }
+    }
+
+
+    /* =========================================================
+       FOOTER
+    ========================================================= */
+
+    .footer {
+
+        padding:
+            0 20px 22px;
+
+        text-align: center;
+
+        color:
+            #475569;
+
+        font-size: 10px;
+    }
+
+
+    /* =========================================================
+       HIDDEN
+    ========================================================= */
+
+    .hidden {
+
+        display: none !important;
+    }
+
+
+    /* =========================================================
+       MOBILE
+    ========================================================= */
+
+    @media (max-width: 600px) {
+
+        .navbar {
+
+            height: 62px;
+
+            padding:
+                0 18px;
+        }
+
+
+        .logo {
+
+            font-size: 18px;
+        }
+
+
+        .home-link {
+
+            font-size: 12px;
+
+            padding:
+                8px 10px;
+        }
+
+
+        .auth-container {
+
+            padding:
+                35px 15px 30px;
+        }
+
+
+        .auth-card {
+
+            padding:
+                27px 21px;
+
+            border-radius:
+                18px;
+        }
+
+
+        .auth-card h1 {
+
+            font-size: 26px;
+        }
+
+
+        .auth-subtitle {
+
+            font-size: 12px;
+        }
+
+
+        .center-glow {
+
+            width: 350px;
+            height: 350px;
+        }
+    }
+
+
+    /* =========================================================
+       REDUCED MOTION
+    ========================================================= */
+
+    @media (prefers-reduced-motion: reduce) {
+
+        *,
+        *::before,
+        *::after {
+
+            animation-duration:
+                0.01ms !important;
+
+            animation-iteration-count:
+                1 !important;
+
+            transition-duration:
+                0.01ms !important;
+        }
+    }
+
+</style>
+```
+
+</head>
+
+<body>
+
+```
+<!-- BACKGROUND -->
+
+<div class="background-grid"></div>
+
+<div class="orb orb-one"></div>
+
+<div class="orb orb-two"></div>
+
+
+<div class="auth-page">
+
+
+    <!-- =====================================================
+         NAVBAR
+    ===================================================== -->
+
+    <div class="navbar">
+
+        <a href="/" class="logo">
+            AI Resume <span>Analyzer</span>
+        </a>
+
+
+        <a href="/" class="home-link">
+            ← Home
+        </a>
+
+    </div>
+
+
+    <!-- =====================================================
+         MAIN
+    ===================================================== -->
+
+    <div class="auth-container">
+
+        <div class="center-glow"></div>
+
+
+        <div class="auth-card">
+
+
+            <!-- ICON -->
+
+            <div
+                class="auth-icon"
+                id="authIcon"
+            >
+                🔐
+            </div>
+
+
+            <!-- TITLE -->
+
+            <h1 id="authTitle">
+                Welcome Back
+            </h1>
+
+
+            <p
+                class="auth-subtitle"
+                id="authSubtitle"
+            >
+                Login to your AI Resume Analyzer account
+                and continue your career journey.
+            </p>
+
+
+            <!-- =================================================
+                 LOGIN / REGISTER TABS
+            ================================================== -->
+
+            <div class="mode-buttons">
+
+
+                <button
+                    type="button"
+                    id="loginTab"
+                    class="mode-button active"
+                    onclick="showLogin()"
+                >
+                    Login
+                </button>
+
+
+                <button
+                    type="button"
+                    id="registerTab"
+                    class="mode-button"
+                    onclick="showRegister()"
+                >
+                    Register
+                </button>
+
+
+            </div>
+
+
+            <!-- =================================================
+                 LOGIN FORM
+            ================================================== -->
+
+            <form
+                id="loginForm"
+                method="POST"
+                action="/login"
+            >
+
+
+                <div class="form-group">
+
+                    <label for="loginEmail">
+                        Email Address
+                    </label>
+
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            ✉
+                        </span>
+
+
+                        <input
+                            type="email"
+                            id="loginEmail"
+                            name="email"
+                            placeholder="Enter your email"
+                            autocomplete="email"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="loginPassword">
+                        Password
+                    </label>
+
+
+                    <div class="input-wrapper password-row">
+
+                        <span class="input-icon">
+                            🔒
+                        </span>
+
+
+                        <input
+                            type="password"
+                            id="loginPassword"
+                            name="password"
+                            placeholder="Enter your password"
+                            autocomplete="current-password"
+                            required
+                        >
+
+
+                        <button
+                            type="button"
+                            class="show-password"
+                            onclick="togglePassword(
+                                'loginPassword',
+                                this
+                            )"
+                        >
+                            Show
+                        </button>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="auth-button"
+                >
+                    Login →
+                </button>
+
+
+            </form>
+
+
+            <!-- =================================================
+                 REGISTER FORM
+            ================================================== -->
+
+            <form
+                id="registerForm"
+                class="hidden"
+                method="POST"
+                action="/register"
+            >
+
+
+                <div class="form-group">
+
+                    <label for="registerName">
+                        Full Name
+                    </label>
+
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            👤
+                        </span>
+
+
+                        <input
+                            type="text"
+                            id="registerName"
+                            name="name"
+                            placeholder="Enter your name"
+                            autocomplete="name"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="registerEmail">
+                        Email Address
+                    </label>
+
+
+                    <div class="input-wrapper">
+
+                        <span class="input-icon">
+                            ✉
+                        </span>
+
+
+                        <input
+                            type="email"
+                            id="registerEmail"
+                            name="email"
+                            placeholder="Enter your email"
+                            autocomplete="email"
+                            required
+                        >
+
+                    </div>
+
+                </div>
+
+
+                <div class="form-group">
+
+                    <label for="registerPassword">
+                        Password
+                    </label>
+
+
+                    <div class="input-wrapper password-row">
+
+                        <span class="input-icon">
+                            🔒
+                        </span>
+
+
+                        <input
+                            type="password"
+                            id="registerPassword"
+                            name="password"
+                            placeholder="Create a password"
+                            autocomplete="new-password"
+                            required
+                            oninput="checkPasswordStrength(this.value)"
+                        >
+
+
+                        <button
+                            type="button"
+                            class="show-password"
+                            onclick="togglePassword(
+                                'registerPassword',
+                                this
+                            )"
+                        >
+                            Show
+                        </button>
+
+                    </div>
+
+
+                    <div
+                        class="password-strength"
+                        id="passwordStrength"
+                    >
+
+                        <div class="strength-bar">
+
+                            <div
+                                class="strength-fill"
+                                id="strengthFill"
+                            ></div>
+
+                        </div>
+
+
+                        <div
+                            class="strength-text"
+                            id="strengthText"
+                        >
+                            Password strength
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                <button
+                    type="submit"
+                    class="auth-button"
+                >
+                    Create Account →
+                </button>
+
+
+            </form>
+
+
+            <!-- =================================================
+                 SWITCH TEXT
+            ================================================== -->
+
+            <div
+                class="switch-text"
+                id="switchText"
+            >
+
+                Don't have an account?
+
+                <button
+                    type="button"
+                    class="switch-link"
+                    onclick="showRegister()"
+                >
+                    Register
+                </button>
+
+            </div>
+
+
+            <!-- SECURITY -->
+
+            <div class="security-note">
+
+                <span class="security-dot"></span>
+
+                <span>
+                    Your account information is kept private.
+                </span>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+
+    <!-- FOOTER -->
+
+    <div class="footer">
+
+        © 2026 AI Resume Analyzer |
+        Your Personal AI Career Assistant
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+
+    /* =========================================================
+       LOGIN
+    ========================================================= */
+
+    function showLogin() {
+
+        document
+            .getElementById("loginForm")
+            .classList
+            .remove("hidden");
+
+
+        document
+            .getElementById("registerForm")
+            .classList
+            .add("hidden");
+
+
+        document
+            .getElementById("loginTab")
+            .classList
+            .add("active");
+
+
+        document
+            .getElementById("registerTab")
+            .classList
+            .remove("active");
+
+
+        document
+            .getElementById("authIcon")
+            .innerText = "🔐";
+
+
+        document
+            .getElementById("authTitle")
+            .innerText =
+            "Welcome Back";
+
+
+        document
+            .getElementById("authSubtitle")
+            .innerText =
+            "Login to your AI Resume Analyzer account and continue your career journey.";
+
+
+        document
+            .getElementById("switchText")
+            .innerHTML =
+            "Don't have an account? " +
+            '<button type="button" class="switch-link" onclick="showRegister()">Register</button>';
+
+
+        document.title =
+            "Login - AI Resume Analyzer";
+
+    }
+
+
+    /* =========================================================
+       REGISTER
+    ========================================================= */
+
+    function showRegister() {
+
+        document
+            .getElementById("loginForm")
+            .classList
+            .add("hidden");
+
+
+        document
+            .getElementById("registerForm")
+            .classList
+            .remove("hidden");
+
+
+        document
+            .getElementById("loginTab")
+            .classList
+            .remove("active");
+
+
+        document
+            .getElementById("registerTab")
+            .classList
+            .add("active");
+
+
+        document
+            .getElementById("authIcon")
+            .innerText = "👤";
+
+
+        document
+            .getElementById("authTitle")
+            .innerText =
+            "Create Account";
+
+
+        document
+            .getElementById("authSubtitle")
+            .innerText =
+            "Create your account and start analyzing your resume with AI.";
+
+
+        document
+            .getElementById("switchText")
+            .innerHTML =
+            "Already have an account? " +
+            '<button type="button" class="switch-link" onclick="showLogin()">Login</button>';
+
+
+        document.title =
+            "Register - AI Resume Analyzer";
+
+    }
+
+
+    /* =========================================================
+       PASSWORD VISIBILITY
+    ========================================================= */
+
+    function togglePassword(inputId, button) {
+
+        const input =
+            document.getElementById(inputId);
+
+
+        if (input.type === "password") {
+
+            input.type = "text";
+
+            button.innerText = "Hide";
+
+        } else {
+
+            input.type = "password";
+
+            button.innerText = "Show";
+
+        }
+
+    }
+
+
+    /* =========================================================
+       PASSWORD STRENGTH
+    ========================================================= */
+
+    function checkPasswordStrength(password) {
+
+        const box =
+            document.getElementById(
+                "passwordStrength"
+            );
+
+        const fill =
+            document.getElementById(
+                "strengthFill"
+            );
+
+        const text =
+            document.getElementById(
+                "strengthText"
+            );
+
+
+        if (password.length === 0) {
+
+            box.style.display = "none";
+
+            return;
+        }
+
+
+        box.style.display = "block";
+
+
+        let score = 0;
+
+
+        if (password.length >= 6) {
+            score++;
+        }
+
+
+        if (password.length >= 8) {
+            score++;
+        }
+
+
+        if (/[A-Z]/.test(password)) {
+            score++;
+        }
+
+
+        if (/[0-9]/.test(password)) {
+            score++;
+        }
+
+
+        if (/[^A-Za-z0-9]/.test(password)) {
+            score++;
+        }
+
+
+        fill.style.width =
+            ((score / 5) * 100) + "%";
+
+
+        if (score <= 2) {
+
+            fill.style.background =
+                "#ef4444";
+
+            text.innerText =
+                "Weak password";
+
+            text.style.color =
+                "#f87171";
+
+        } else if (score <= 3) {
+
+            fill.style.background =
+                "#f59e0b";
+
+            text.innerText =
+                "Moderate password";
+
+            text.style.color =
+                "#fbbf24";
+
+        } else {
+
+            fill.style.background =
+                "#4ade80";
+
+            text.innerText =
+                "Strong password";
+
+            text.style.color =
+                "#4ade80";
+        }
+
+    }
+
+
+    /* =========================================================
+       OPEN CORRECT PAGE MODE
+    ========================================================= */
+
+    document.addEventListener(
+        "DOMContentLoaded",
+        function () {
+
+            const currentPath =
+                window.location.pathname;
+
+
+            if (currentPath === "/register") {
+
+                showRegister();
+
+            } else {
+
+                showLogin();
+
+            }
+
+        }
+    );
+
+</script>
+```
+
+</body>
+
+</html>

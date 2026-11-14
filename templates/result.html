@@ -1,0 +1,2699 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+<meta charset="UTF-8">
+
+<meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+>
+
+<title>AI Resume Intelligence</title>
+
+
+<style>
+
+/* =========================================================
+   GLOBAL
+   ========================================================= */
+
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, sans-serif;
+}
+
+body{
+    background:#081120;
+    color:#f8fafc;
+    overflow-x:hidden;
+}
+
+a{
+    text-decoration:none;
+}
+
+.container{
+    width:92%;
+    max-width:1380px;
+    margin:20px auto;
+    padding-bottom:35px;
+}
+
+
+/* =========================================================
+   NAVBAR
+   ========================================================= */
+
+.navbar{
+    min-height:62px;
+    padding:12px 4%;
+
+    background:#0b1422;
+
+    border-bottom:1px solid rgba(255,255,255,.08);
+
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+
+    gap:15px;
+
+    position:sticky;
+    top:0;
+    z-index:1000;
+}
+
+.logo{
+    font-size:22px;
+    font-weight:bold;
+    color:#38bdf8;
+}
+
+.menu{
+    display:flex;
+    gap:5px;
+    flex-wrap:wrap;
+    justify-content:flex-end;
+}
+
+.menu a{
+    color:#dbeafe;
+
+    padding:8px 12px;
+
+    border-radius:8px;
+
+    font-size:12px;
+}
+
+.menu a:hover{
+    background:rgba(56,189,248,.12);
+}
+
+.menu a:last-child{
+    background:linear-gradient(
+        135deg,
+        #2563eb,
+        #38bdf8
+    );
+}
+
+
+/* =========================================================
+   HERO
+   ========================================================= */
+
+.hero{
+    text-align:center;
+
+    padding:32px 20px 36px;
+
+    background:linear-gradient(
+        135deg,
+        #081120,
+        #1e3a8a,
+        #6d28d9
+    );
+}
+
+.hero h1{
+    font-size:30px;
+    margin-bottom:8px;
+}
+
+.hero p{
+    color:#dbeafe;
+    font-size:13px;
+}
+
+
+/* =========================================================
+   COMMON
+   ========================================================= */
+
+.glass-card,
+.stat-card{
+    background:rgba(15,32,50,.88);
+
+    border:1px solid rgba(148,163,184,.13);
+
+    box-shadow:
+        0 8px 24px rgba(0,0,0,.14);
+
+    border-radius:14px;
+}
+
+.glass-card{
+    padding:18px;
+}
+
+.section-block{
+    margin-top:28px;
+}
+
+.section-heading{
+    margin-bottom:13px;
+}
+
+.section-heading h2{
+    font-size:20px;
+    margin-bottom:5px;
+}
+
+.section-heading p{
+    color:#94a3b8;
+    font-size:12px;
+    line-height:1.5;
+}
+
+.glass-card h2{
+    font-size:20px;
+    margin-bottom:12px;
+}
+
+.glass-card h3{
+    font-size:16px;
+    margin-bottom:12px;
+}
+
+
+/* =========================================================
+   SCORE OVERVIEW
+   ========================================================= */
+
+.score-overview{
+    display:grid;
+
+    grid-template-columns:
+        1.4fr 1fr 1fr 1fr;
+
+    gap:12px;
+
+    margin-bottom:16px;
+
+    align-items:start;
+}
+
+.overall-card{
+    display:flex;
+
+    align-items:center;
+
+    gap:18px;
+
+    padding:18px;
+}
+
+.score-circle{
+    width:105px;
+    height:105px;
+
+    flex-shrink:0;
+
+    border-radius:50%;
+
+    background:conic-gradient(
+        #38bdf8 0% {{ overall_score }}%,
+        #172437 {{ overall_score }}% 100%
+    );
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.score-inner{
+    width:78px;
+    height:78px;
+
+    border-radius:50%;
+
+    background:#081120;
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    font-size:22px;
+    font-weight:bold;
+}
+
+.overall-info{
+    min-width:0;
+}
+
+.overall-info h2{
+    margin-bottom:7px;
+}
+
+.overall-info p{
+    color:#94a3b8;
+
+    font-size:12px;
+
+    line-height:1.55;
+}
+
+.stage-badge{
+    display:inline-block;
+
+    margin-top:9px;
+
+    padding:6px 10px;
+
+    border-radius:14px;
+
+    background:rgba(56,189,248,.12);
+
+    color:#38bdf8;
+
+    font-size:11px;
+
+    font-weight:bold;
+}
+
+.stat-card{
+    padding:18px;
+
+    min-height:105px;
+
+    text-align:center;
+
+    display:flex;
+    flex-direction:column;
+
+    justify-content:center;
+}
+
+.stat-card h3{
+    color:#93c5fd;
+
+    font-size:12px;
+
+    margin-bottom:8px;
+}
+
+.stat-card p{
+    font-size:25px;
+
+    font-weight:bold;
+}
+
+
+/* =========================================================
+   CANDIDATE PROFILE
+   IMPORTANT:
+   align-items:start prevents one card stretching another
+   ========================================================= */
+
+.profile-grid{
+    display:grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        minmax(0, 1fr);
+
+    gap:14px;
+
+    align-items:start;
+}
+
+.profile-grid > .glass-card{
+    height:fit-content;
+    align-self:start;
+}
+
+.profile-row{
+    display:grid;
+
+    grid-template-columns:
+        115px minmax(0, 1fr);
+
+    align-items:start;
+
+    gap:15px;
+
+    padding:9px 0;
+
+    border-bottom:1px solid rgba(148,163,184,.08);
+
+    font-size:12px;
+
+    line-height:1.5;
+}
+
+.profile-row:last-child{
+    border-bottom:none;
+}
+
+.profile-row span{
+    color:#94a3b8;
+}
+
+.profile-row strong{
+    color:#e2e8f0;
+
+    text-align:right;
+
+    overflow-wrap:anywhere;
+}
+
+
+/* =========================================================
+   PROFESSIONAL PRESENCE
+   ========================================================= */
+
+.profile-link-list{
+    display:flex;
+
+    flex-direction:column;
+
+    gap:7px;
+}
+
+.profile-link-row{
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:15px;
+
+    padding:9px 11px;
+
+    border-radius:9px;
+
+    background:rgba(255,255,255,.025);
+
+    font-size:12px;
+}
+
+.profile-link-row span{
+    color:#dbeafe;
+
+    font-weight:bold;
+}
+
+.profile-link-row a{
+    color:#38bdf8;
+
+    white-space:nowrap;
+}
+
+.presence-score{
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-top:13px;
+
+    padding-top:11px;
+
+    border-top:1px solid rgba(148,163,184,.10);
+
+    font-size:12px;
+}
+
+.presence-score span{
+    color:#94a3b8;
+}
+
+.presence-score strong{
+    color:#38bdf8;
+}
+
+
+/* =========================================================
+   NOT DETECTED TEXT
+   NO CARD
+   NO BACKGROUND
+   NO EMPTY BOX
+   ========================================================= */
+
+.missing-summary{
+    margin-top:11px;
+
+    padding:0 2px;
+
+    color:#64748b;
+
+    font-size:12px;
+
+    line-height:1.55;
+}
+
+.missing-summary strong{
+    color:#94a3b8;
+}
+
+
+/* =========================================================
+   RESUME HIGHLIGHTS
+   IMPORTANT:
+   NOT GRID
+   Each present section has its own natural height.
+   ========================================================= */
+
+.highlight-wrapper{
+    display:flex;
+
+    flex-direction:column;
+
+    gap:10px;
+}
+
+
+/* Every existing section gets only its own height */
+
+.highlight-card{
+    width:100%;
+
+    height:fit-content;
+
+    align-self:flex-start;
+}
+
+
+/* Title */
+
+.card-title-row{
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    gap:10px;
+
+    margin-bottom:11px;
+}
+
+.card-title-row h3{
+    margin:0;
+}
+
+.count-badge{
+    min-width:28px;
+
+    padding:4px 8px;
+
+    text-align:center;
+
+    border-radius:14px;
+
+    background:rgba(56,189,248,.15);
+
+    color:#38bdf8;
+
+    font-size:11px;
+
+    font-weight:bold;
+}
+
+
+/* Content */
+
+.highlight-list{
+    display:flex;
+
+    flex-direction:column;
+
+    gap:7px;
+}
+
+.highlight-item{
+    display:flex;
+
+    align-items:flex-start;
+
+    gap:10px;
+
+    padding:9px 10px;
+
+    border-radius:9px;
+
+    background:rgba(255,255,255,.025);
+
+    line-height:1.5;
+}
+
+.highlight-item strong{
+    font-size:12px;
+
+    font-weight:normal;
+
+    color:#dbeafe;
+
+    overflow-wrap:anywhere;
+}
+
+.highlight-icon{
+    width:25px;
+    height:25px;
+
+    flex-shrink:0;
+
+    display:flex;
+
+    align-items:center;
+    justify-content:center;
+
+    border-radius:7px;
+
+    background:rgba(37,99,235,.25);
+
+    color:#60a5fa;
+
+    font-size:11px;
+
+    font-weight:bold;
+}
+
+
+/* =========================================================
+   RESUME HEALTH
+   COMPACT TEXT FORMAT
+   ========================================================= */
+
+.health-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    gap:6px 24px;
+
+    padding:2px 0;
+}
+
+.health-item{
+    padding:8px 2px;
+
+    border-bottom:1px solid rgba(148,163,184,.08);
+
+    background:transparent;
+
+    border-radius:0;
+}
+
+.health-line{
+    display:flex;
+
+    justify-content:flex-start;
+
+    align-items:center;
+
+    gap:8px;
+
+    font-size:12px;
+
+    line-height:1.45;
+}
+
+.health-line span{
+    color:#dbeafe;
+}
+
+.health-line span::after{
+    content:" =";
+    color:#64748b;
+}
+
+.health-line strong{
+    color:#38bdf8;
+
+    white-space:nowrap;
+}
+
+.health-status{
+    margin-top:2px;
+
+    padding-left:0;
+
+    color:#64748b;
+
+    font-size:10px;
+
+    line-height:1.4;
+}
+
+
+/* =========================================================
+   DETECTED SKILLS
+   ========================================================= */
+
+.skills{
+    display:flex;
+
+    flex-wrap:wrap;
+
+    gap:7px;
+}
+
+.skill{
+    padding:7px 11px;
+
+    border-radius:18px;
+
+    background:linear-gradient(
+        135deg,
+        #2563eb,
+        #38bdf8
+    );
+
+    font-size:11px;
+
+    font-weight:bold;
+
+    color:white;
+}
+
+
+/* =========================================================
+   RESUME ANALYSIS
+   ========================================================= */
+
+.analysis-grid{
+    display:grid;
+
+    grid-template-columns:
+        minmax(0, 1fr)
+        minmax(0, 1fr);
+
+    gap:14px;
+
+    align-items:start;
+}
+
+.analysis-grid > .glass-card{
+    height:fit-content;
+}
+
+.result-list{
+    list-style:none;
+}
+
+.result-list li{
+    padding:8px 10px;
+
+    margin-bottom:5px;
+
+    border-radius:8px;
+
+    background:rgba(255,255,255,.025);
+
+    font-size:12px;
+
+    line-height:1.5;
+}
+
+.result-list li:last-child{
+    margin-bottom:0;
+}
+
+.improvement-list li{
+    border-left:3px solid #f59e0b;
+}
+
+.strength-list li{
+    border-left:3px solid #22c55e;
+}
+
+
+/* =========================================================
+   AI SUMMARY
+   ========================================================= */
+
+.summary{
+    color:#dbe4ef;
+
+    font-size:13px;
+
+    line-height:1.6;
+}
+
+
+/* =========================================================
+   RESUME QUALITY
+   COMPACT = FORMAT
+   ========================================================= */
+
+.quality-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(2, minmax(0, 1fr));
+
+    column-gap:40px;
+
+    row-gap:0;
+}
+
+.quality-item{
+    padding:8px 0;
+
+    background:transparent;
+
+    border-bottom:1px solid rgba(148,163,184,.08);
+
+    display:flex;
+
+    justify-content:flex-start;
+
+    align-items:center;
+
+    gap:7px;
+
+    font-size:12px;
+
+    line-height:1.45;
+}
+
+.quality-item span{
+    color:#dbeafe;
+}
+
+.quality-item span::after{
+    content:" =";
+    color:#64748b;
+}
+
+.quality-item strong{
+    color:#38bdf8;
+
+    white-space:nowrap;
+}
+
+
+/* =========================================================
+   RESUME DETAILS
+   ========================================================= */
+
+.details-grid{
+    display:grid;
+
+    grid-template-columns:
+        repeat(3, minmax(0, 1fr));
+
+    gap:10px;
+
+    align-items:start;
+}
+
+.detail-card{
+    text-align:center;
+
+    padding:14px;
+
+    height:fit-content;
+}
+
+.detail-card span{
+    display:block;
+
+    color:#94a3b8;
+
+    font-size:11px;
+
+    margin-bottom:5px;
+}
+
+.detail-card strong{
+    font-size:21px;
+}
+
+
+/* =========================================================
+   EXTRACTED TEXT
+   ========================================================= */
+
+details{
+    margin-top:0;
+}
+
+details summary{
+    cursor:pointer;
+
+    color:#38bdf8;
+
+    font-size:12px;
+
+    font-weight:bold;
+}
+
+textarea{
+    width:100%;
+
+    height:300px;
+
+    margin-top:12px;
+
+    background:#091625;
+
+    color:#dbeafe;
+
+    border:1px solid rgba(148,163,184,.10);
+
+    border-radius:10px;
+
+    padding:14px;
+
+    font-size:12px;
+
+    resize:vertical;
+
+    line-height:1.55;
+
+    outline:none;
+}
+
+
+/* =========================================================
+   ACTIONS
+   ========================================================= */
+
+.actions{
+    display:flex;
+
+    gap:10px;
+
+    margin-top:17px;
+}
+
+.action-btn{
+    display:inline-block;
+
+    padding:10px 15px;
+
+    border-radius:8px;
+
+    font-size:12px;
+
+    font-weight:bold;
+}
+
+.primary-btn{
+    background:linear-gradient(
+        135deg,
+        #2563eb,
+        #38bdf8
+    );
+
+    color:white;
+}
+
+.secondary-btn{
+    background:#172437;
+
+    color:#dbeafe;
+}
+
+.action-btn:hover{
+    opacity:.92;
+}
+
+
+/* =========================================================
+   FOOTER
+   ========================================================= */
+
+.footer{
+    text-align:center;
+
+    padding:18px 10px 5px;
+
+    color:#64748b;
+
+    font-size:11px;
+}
+
+
+/* =========================================================
+   TABLET
+   ========================================================= */
+
+@media(max-width:1050px){
+
+    .score-overview{
+        grid-template-columns:1fr 1fr;
+    }
+
+    .profile-grid{
+        grid-template-columns:1fr;
+    }
+
+}
+
+
+/* =========================================================
+   MOBILE
+   ========================================================= */
+
+@media(max-width:700px){
+
+    .navbar{
+        align-items:flex-start;
+
+        flex-direction:column;
+    }
+
+    .menu{
+        width:100%;
+
+        justify-content:flex-start;
+    }
+
+    .score-overview{
+        grid-template-columns:1fr;
+    }
+
+    .profile-grid{
+        grid-template-columns:1fr;
+    }
+
+    .health-grid{
+        grid-template-columns:1fr;
+    }
+
+    .quality-grid{
+        grid-template-columns:1fr;
+    }
+
+    .analysis-grid{
+        grid-template-columns:1fr;
+    }
+
+    .details-grid{
+        grid-template-columns:1fr;
+    }
+
+    .overall-card{
+        flex-direction:column;
+
+        text-align:center;
+    }
+
+    .profile-row{
+        grid-template-columns:
+            105px minmax(0,1fr);
+
+        gap:12px;
+    }
+
+    .profile-row strong{
+        max-width:none;
+    }
+
+    .profile-link-row{
+        align-items:flex-start;
+
+        flex-direction:column;
+
+        gap:6px;
+    }
+
+    .actions{
+        flex-direction:column;
+    }
+
+    .action-btn{
+        text-align:center;
+    }
+
+    .hero h1{
+        font-size:25px;
+    }
+
+}
+
+
+/* =========================================================
+   PREMIUM UI LAYER — visual only, backend/Jinja untouched
+   ========================================================= */
+
+:root{
+    --ui-bg:#050b16;
+    --ui-panel:rgba(12,24,40,.78);
+    --ui-panel-2:rgba(15,31,51,.72);
+    --ui-border:rgba(148,163,184,.14);
+    --ui-blue:#38bdf8;
+    --ui-cyan:#22d3ee;
+    --ui-purple:#8b5cf6;
+    --ui-text:#f8fafc;
+    --ui-muted:#94a3b8;
+    --ui-glow:0 0 35px rgba(56,189,248,.12);
+}
+
+/* Animated ambient background */
+body{
+    background:
+        radial-gradient(circle at 12% 8%, rgba(56,189,248,.09), transparent 27%),
+        radial-gradient(circle at 88% 18%, rgba(139,92,246,.10), transparent 28%),
+        radial-gradient(circle at 50% 92%, rgba(34,211,238,.06), transparent 30%),
+        #050b16;
+    background-attachment:fixed;
+}
+
+/* Subtle moving light */
+body::before{
+    content:"";
+    position:fixed;
+    inset:-35%;
+    z-index:-2;
+    pointer-events:none;
+    background:
+        radial-gradient(circle, rgba(56,189,248,.055) 0 1px, transparent 1.5px);
+    background-size:42px 42px;
+    animation:ambientDrift 28s linear infinite;
+    opacity:.55;
+}
+
+@keyframes ambientDrift{
+    from{transform:translate3d(0,0,0) rotate(0deg)}
+    to{transform:translate3d(42px,24px,0) rotate(2deg)}
+}
+
+/* Navbar */
+.navbar{
+    background:rgba(5,11,22,.78);
+    backdrop-filter:blur(18px);
+    -webkit-backdrop-filter:blur(18px);
+    box-shadow:0 8px 30px rgba(0,0,0,.18);
+    transition:.3s ease;
+}
+
+.navbar::after{
+    content:"";
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:-1px;
+    height:1px;
+    background:linear-gradient(90deg,transparent,var(--ui-cyan),var(--ui-purple),transparent);
+    opacity:.55;
+}
+
+.logo{
+    letter-spacing:.2px;
+    text-shadow:0 0 18px rgba(56,189,248,.25);
+    transition:.3s ease;
+}
+
+.logo:hover{
+    transform:translateY(-1px);
+    text-shadow:0 0 24px rgba(56,189,248,.5);
+}
+
+.menu a{
+    position:relative;
+    transition:transform .25s ease, background .25s ease, color .25s ease;
+}
+
+.menu a::after{
+    content:"";
+    position:absolute;
+    left:12px;
+    right:12px;
+    bottom:3px;
+    height:2px;
+    border-radius:2px;
+    background:linear-gradient(90deg,var(--ui-cyan),var(--ui-purple));
+    transform:scaleX(0);
+    transform-origin:center;
+    transition:transform .25s ease;
+}
+
+.menu a:hover{
+    transform:translateY(-2px);
+    color:white;
+}
+
+.menu a:hover::after{
+    transform:scaleX(1);
+}
+
+.menu a:last-child{
+    box-shadow:0 0 22px rgba(56,189,248,.18);
+}
+
+/* Hero */
+.hero{
+    position:relative;
+    overflow:hidden;
+    isolation:isolate;
+    padding:58px 20px 54px;
+    background:
+        radial-gradient(circle at 20% 30%, rgba(56,189,248,.18), transparent 28%),
+        radial-gradient(circle at 82% 30%, rgba(139,92,246,.20), transparent 30%),
+        linear-gradient(135deg,#07111f,#101f43 52%,#27145c);
+}
+
+.hero::before,
+.hero::after{
+    content:"";
+    position:absolute;
+    border-radius:50%;
+    pointer-events:none;
+    filter:blur(2px);
+}
+
+.hero::before{
+    width:240px;
+    height:240px;
+    left:-80px;
+    top:-120px;
+    border:1px solid rgba(56,189,248,.18);
+    box-shadow:0 0 80px rgba(56,189,248,.10);
+    animation:heroOrb 7s ease-in-out infinite;
+}
+
+.hero::after{
+    width:300px;
+    height:300px;
+    right:-120px;
+    bottom:-180px;
+    border:1px solid rgba(139,92,246,.18);
+    box-shadow:0 0 100px rgba(139,92,246,.12);
+    animation:heroOrb 9s ease-in-out infinite reverse;
+}
+
+@keyframes heroOrb{
+    0%,100%{transform:translateY(0) scale(1)}
+    50%{transform:translateY(-18px) scale(1.06)}
+}
+
+.hero h1{
+    position:relative;
+    z-index:1;
+    font-size:clamp(30px,4vw,46px);
+    letter-spacing:-1px;
+    background:linear-gradient(90deg,#fff,#b9ecff,#c4b5fd,#fff);
+    background-size:240% auto;
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    animation:gradientText 6s linear infinite;
+}
+
+@keyframes gradientText{
+    to{background-position:240% center}
+}
+
+.hero p{
+    position:relative;
+    z-index:1;
+    font-size:14px;
+}
+
+/* Cards */
+.glass-card,
+.stat-card{
+    position:relative;
+    overflow:hidden;
+    background:linear-gradient(145deg,rgba(15,32,50,.82),rgba(8,18,31,.78));
+    border:1px solid var(--ui-border);
+    box-shadow:0 12px 38px rgba(0,0,0,.20),var(--ui-glow);
+    backdrop-filter:blur(14px);
+    -webkit-backdrop-filter:blur(14px);
+    transition:
+        transform .32s cubic-bezier(.2,.8,.2,1),
+        border-color .32s ease,
+        box-shadow .32s ease,
+        background .32s ease;
+}
+
+.glass-card::before,
+.stat-card::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background:linear-gradient(
+        120deg,
+        transparent 20%,
+        rgba(255,255,255,.035) 45%,
+        transparent 70%
+    );
+    transform:translateX(-120%);
+    transition:transform .7s ease;
+}
+
+.glass-card:hover,
+.stat-card:hover{
+    transform:translateY(-4px);
+    border-color:rgba(56,189,248,.24);
+    box-shadow:0 18px 45px rgba(0,0,0,.27),0 0 35px rgba(56,189,248,.08);
+}
+
+.glass-card:hover::before,
+.stat-card:hover::before{
+    transform:translateX(120%);
+}
+
+/* Section headings */
+.section-heading{
+    position:relative;
+    padding-left:14px;
+}
+
+.section-heading::before{
+    content:"";
+    position:absolute;
+    left:0;
+    top:2px;
+    bottom:4px;
+    width:3px;
+    border-radius:4px;
+    background:linear-gradient(var(--ui-cyan),var(--ui-purple));
+    box-shadow:0 0 12px rgba(56,189,248,.35);
+}
+
+.section-heading h2{
+    letter-spacing:-.2px;
+}
+
+/* Score area */
+.score-overview{
+    perspective:1000px;
+}
+
+.overall-card{
+    min-height:141px;
+}
+
+.score-circle{
+    position:relative;
+    box-shadow:0 0 28px rgba(56,189,248,.13);
+    animation:scorePulse 3.5s ease-in-out infinite;
+}
+
+.score-circle::after{
+    content:"";
+    position:absolute;
+    inset:-7px;
+    border-radius:50%;
+    border:1px solid rgba(56,189,248,.18);
+    border-top-color:rgba(139,92,246,.8);
+    animation:spinRing 8s linear infinite;
+}
+
+@keyframes scorePulse{
+    0%,100%{filter:drop-shadow(0 0 0 rgba(56,189,248,0))}
+    50%{filter:drop-shadow(0 0 12px rgba(56,189,248,.25))}
+}
+
+@keyframes spinRing{
+    to{transform:rotate(360deg)}
+}
+
+.stat-card p{
+    color:#e0f2fe;
+    text-shadow:0 0 18px rgba(56,189,248,.18);
+}
+
+/* Skills */
+.skill{
+    position:relative;
+    overflow:hidden;
+    cursor:default;
+    transition:transform .25s ease, box-shadow .25s ease, filter .25s ease;
+    box-shadow:0 5px 18px rgba(37,99,235,.16);
+}
+
+.skill::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(120deg,transparent,rgba(255,255,255,.28),transparent);
+    transform:translateX(-120%);
+    transition:transform .5s ease;
+}
+
+.skill:hover{
+    transform:translateY(-3px) scale(1.03);
+    box-shadow:0 9px 24px rgba(56,189,248,.24);
+    filter:saturate(1.15);
+}
+
+.skill:hover::after{
+    transform:translateX(120%);
+}
+
+/* Highlight rows */
+.highlight-item,
+.result-list li,
+.profile-link-row{
+    transition:transform .24s ease,background .24s ease,border-color .24s ease;
+}
+
+.highlight-item:hover,
+.result-list li:hover,
+.profile-link-row:hover{
+    transform:translateX(4px);
+    background:rgba(56,189,248,.055);
+}
+
+/* Buttons */
+.action-btn{
+    position:relative;
+    overflow:hidden;
+    transition:transform .25s ease,box-shadow .25s ease,background .25s ease;
+}
+
+.action-btn::after{
+    content:"";
+    position:absolute;
+    top:0;
+    left:-120%;
+    width:70%;
+    height:100%;
+    transform:skewX(-20deg);
+    background:rgba(255,255,255,.18);
+    transition:left .55s ease;
+}
+
+.action-btn:hover{
+    transform:translateY(-2px);
+    box-shadow:0 9px 24px rgba(56,189,248,.16);
+}
+
+.action-btn:hover::after{
+    left:140%;
+}
+
+/* Expandable extracted text */
+details summary{
+    transition:color .2s ease,transform .2s ease;
+}
+
+details summary:hover{
+    color:#7dd3fc;
+    transform:translateX(3px);
+}
+
+textarea{
+    box-shadow:inset 0 0 25px rgba(0,0,0,.18);
+}
+
+/* Footer */
+.footer{
+    position:relative;
+    margin-top:30px;
+}
+
+.footer::before{
+    content:"";
+    display:block;
+    width:120px;
+    height:1px;
+    margin:0 auto 12px;
+    background:linear-gradient(90deg,transparent,var(--ui-cyan),var(--ui-purple),transparent);
+    opacity:.45;
+}
+
+/* Reveal animation */
+.reveal{
+    opacity:0;
+    transform:translateY(18px);
+    transition:opacity .65s ease,transform .65s cubic-bezier(.2,.8,.2,1);
+}
+
+.reveal.revealed{
+    opacity:1;
+    transform:none;
+}
+
+/* Floating AI status chip */
+.ai-status{
+    position:fixed;
+    right:20px;
+    bottom:20px;
+    z-index:999;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:9px 12px;
+    border-radius:999px;
+    background:rgba(7,17,31,.78);
+    border:1px solid rgba(56,189,248,.18);
+    box-shadow:0 8px 30px rgba(0,0,0,.25);
+    backdrop-filter:blur(12px);
+    color:#bae6fd;
+    font-size:10px;
+    letter-spacing:.3px;
+    animation:statusFloat 4s ease-in-out infinite;
+}
+
+.ai-status-dot{
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:#22c55e;
+    box-shadow:0 0 12px rgba(34,197,94,.8);
+    animation:dotPulse 1.8s ease-in-out infinite;
+}
+
+@keyframes statusFloat{
+    0%,100%{transform:translateY(0)}
+    50%{transform:translateY(-5px)}
+}
+
+@keyframes dotPulse{
+    0%,100%{opacity:.55;transform:scale(.9)}
+    50%{opacity:1;transform:scale(1.15)}
+}
+
+/* Respect accessibility preferences */
+@media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{
+        animation-duration:.01ms !important;
+        animation-iteration-count:1 !important;
+        scroll-behavior:auto !important;
+        transition-duration:.01ms !important;
+    }
+}
+
+@media(max-width:700px){
+    .hero{
+        padding:45px 16px 42px;
+    }
+
+    .ai-status{
+        right:12px;
+        bottom:12px;
+    }
+
+    .glass-card:hover,
+    .stat-card:hover{
+        transform:translateY(-2px);
+    }
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =====================================================
+     NAVBAR
+     ===================================================== -->
+
+<div class="navbar">
+
+    <div class="logo">
+        AI Resume Analyzer
+    </div>
+
+    <div class="menu">
+
+        <a href="/">
+            Home
+        </a>
+
+        <a href="/upload">
+            Upload
+        </a>
+
+        <a href="/dashboard">
+            Dashboard
+        </a>
+
+        <a href="/my-resume">
+            My Resume
+        </a>
+
+    </div>
+
+</div>
+
+
+
+<!-- =====================================================
+     HERO
+     ===================================================== -->
+
+<div class="hero">
+
+    <h1>
+        AI Resume Intelligence
+    </h1>
+
+    <p>
+        Professional resume analysis, career-stage evaluation
+        and ATS readiness
+    </p>
+
+</div>
+
+
+
+<div class="container">
+
+
+<!-- =====================================================
+     SCORE OVERVIEW
+     ===================================================== -->
+
+<div class="score-overview">
+
+
+    <div class="glass-card overall-card">
+
+        <div class="score-circle">
+
+            <div class="score-inner">
+                {{ overall_score }}%
+            </div>
+
+        </div>
+
+
+        <div class="overall-info">
+
+            <h2>
+                Overall Resume Score
+            </h2>
+
+            <p>
+                Career-stage-aware evaluation based on resume
+                structure, ATS compatibility, technical skills,
+                content quality, completeness and professional presence.
+            </p>
+
+            <span class="stage-badge">
+                {{ career_stage }}
+            </span>
+
+        </div>
+
+    </div>
+
+
+
+    <div class="stat-card">
+
+        <h3>
+            ATS Compatibility
+        </h3>
+
+        <p>
+            {{ ats_score }}%
+        </p>
+
+    </div>
+
+
+
+    <div class="stat-card">
+
+        <h3>
+            Technical Skill Strength
+        </h3>
+
+        <p>
+            {{ skill_strength }}%
+        </p>
+
+    </div>
+
+
+
+    <div class="stat-card">
+
+        <h3>
+            Content Quality
+        </h3>
+
+        <p>
+            {{ content_quality }}%
+        </p>
+
+    </div>
+
+
+</div>
+
+
+
+<!-- =====================================================
+     CANDIDATE PROFILE
+     ===================================================== -->
+
+<section class="section-block">
+
+
+    <div class="section-heading">
+
+        <h2>
+            Candidate Profile
+        </h2>
+
+        <p>
+            Information identified from the uploaded resume
+        </p>
+
+    </div>
+
+
+
+    <div class="profile-grid">
+
+
+        <!-- PROFILE INFORMATION -->
+
+        <div class="glass-card">
+
+            <h3>
+                Profile Information
+            </h3>
+
+
+            <div class="profile-row">
+
+                <span>
+                    Name
+                </span>
+
+                <strong>
+                    {{ name or "Not detected" }}
+                </strong>
+
+            </div>
+
+
+            <div class="profile-row">
+
+                <span>
+                    Email
+                </span>
+
+                <strong>
+                    {{ email or "Not detected" }}
+                </strong>
+
+            </div>
+
+
+            <div class="profile-row">
+
+                <span>
+                    Phone
+                </span>
+
+                <strong>
+                    {{ phone or "Not detected" }}
+                </strong>
+
+            </div>
+
+
+            <div class="profile-row">
+
+                <span>
+                    Education
+                </span>
+
+                <strong>
+                    {{ education or "Not detected" }}
+                </strong>
+
+            </div>
+
+
+            <div class="profile-row">
+
+                <span>
+                    Career Stage
+                </span>
+
+                <strong>
+                    {{ career_stage }}
+                </strong>
+
+            </div>
+
+
+            <div class="profile-row">
+
+                <span>
+                    Resume Sections
+                </span>
+
+                <strong>
+
+                    {{
+                        detected_sections|join(", ")
+                        if detected_sections
+                        else "Not detected"
+                    }}
+
+                </strong>
+
+            </div>
+
+
+            <div class="profile-row">
+
+                <span>
+                    Uploaded
+                </span>
+
+                <strong>
+                    {{ upload_date }}
+                </strong>
+
+            </div>
+
+
+        </div>
+
+
+
+        <!-- PROFESSIONAL PRESENCE -->
+
+        <div class="glass-card">
+
+            <h3>
+                Professional Presence
+            </h3>
+
+
+            {% if professional_links %}
+
+                <div class="profile-link-list">
+
+                    {% for platform, link in professional_links.items() %}
+
+                        <div class="profile-link-row">
+
+                            <span>
+                                {{ platform }}
+                            </span>
+
+                            <a
+                                href="{{ link }}"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                            >
+                                View Profile →
+                            </a>
+
+                        </div>
+
+                    {% endfor %}
+
+                </div>
+
+            {% else %}
+
+                <div class="missing-summary">
+
+                    No professional profile links were
+                    detected in the resume.
+
+                </div>
+
+            {% endif %}
+
+
+            <div class="presence-score">
+
+                <span>
+                    Professional Presence
+                </span>
+
+                <strong>
+                    {{ professional_presence_score }}%
+                </strong>
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     RESUME HIGHLIGHTS
+     ===================================================== -->
+
+<section class="section-block">
+
+
+    <div class="section-heading">
+
+        <h2>
+            Resume Highlights
+        </h2>
+
+        <p>
+            Key projects, experience, internships,
+            certifications and responsibilities detected
+        </p>
+
+    </div>
+
+
+
+    <div class="highlight-wrapper">
+
+
+        <!-- PROJECTS -->
+
+        {% if project_items %}
+
+        <div class="glass-card highlight-card">
+
+            <div class="card-title-row">
+
+                <h3>
+                    Projects
+                </h3>
+
+                <span class="count-badge">
+                    {{ project_items|length }}
+                </span>
+
+            </div>
+
+
+            <div class="highlight-list">
+
+                {% for project in project_items %}
+
+                    <div class="highlight-item">
+
+                        <span class="highlight-icon">
+                            P
+                        </span>
+
+                        <strong>
+                            {{ project }}
+                        </strong>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+
+
+        <!-- WORK EXPERIENCE -->
+
+        {% if experience_items %}
+
+        <div class="glass-card highlight-card">
+
+            <div class="card-title-row">
+
+                <h3>
+                    Work Experience
+                </h3>
+
+                <span class="count-badge">
+                    {{ experience_items|length }}
+                </span>
+
+            </div>
+
+
+            <div class="highlight-list">
+
+                {% for item in experience_items %}
+
+                    <div class="highlight-item">
+
+                        <span class="highlight-icon">
+                            E
+                        </span>
+
+                        <strong>
+                            {{ item }}
+                        </strong>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+
+
+        <!-- INTERNSHIPS -->
+
+        {% if internship_items %}
+
+        <div class="glass-card highlight-card">
+
+            <div class="card-title-row">
+
+                <h3>
+                    Internships
+                </h3>
+
+                <span class="count-badge">
+                    {{ internship_items|length }}
+                </span>
+
+            </div>
+
+
+            <div class="highlight-list">
+
+                {% for item in internship_items %}
+
+                    <div class="highlight-item">
+
+                        <span class="highlight-icon">
+                            I
+                        </span>
+
+                        <strong>
+                            {{ item }}
+                        </strong>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+
+
+        <!-- CERTIFICATIONS -->
+
+        {% if certification_items %}
+
+        <div class="glass-card highlight-card">
+
+            <div class="card-title-row">
+
+                <h3>
+                    Certifications
+                </h3>
+
+                <span class="count-badge">
+                    {{ certification_items|length }}
+                </span>
+
+            </div>
+
+
+            <div class="highlight-list">
+
+                {% for item in certification_items %}
+
+                    <div class="highlight-item">
+
+                        <span class="highlight-icon">
+                            C
+                        </span>
+
+                        <strong>
+                            {{ item }}
+                        </strong>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+
+
+        <!-- ACHIEVEMENTS -->
+
+        {% if achievement_items %}
+
+        <div class="glass-card highlight-card">
+
+            <div class="card-title-row">
+
+                <h3>
+                    Achievements &amp; Hackathons
+                </h3>
+
+                <span class="count-badge">
+                    {{ achievement_items|length }}
+                </span>
+
+            </div>
+
+
+            <div class="highlight-list">
+
+                {% for item in achievement_items %}
+
+                    <div class="highlight-item">
+
+                        <span class="highlight-icon">
+                            A
+                        </span>
+
+                        <strong>
+                            {{ item }}
+                        </strong>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+
+
+        <!-- POSITIONS OF RESPONSIBILITY -->
+
+        {% if leadership_items %}
+
+        <div class="glass-card highlight-card">
+
+            <div class="card-title-row">
+
+                <h3>
+                    Positions of Responsibility
+                </h3>
+
+                <span class="count-badge">
+                    {{ leadership_items|length }}
+                </span>
+
+            </div>
+
+
+            <div class="highlight-list">
+
+                {% for item in leadership_items %}
+
+                    <div class="highlight-item">
+
+                        <span class="highlight-icon">
+                            L
+                        </span>
+
+                        <strong>
+                            {{ item }}
+                        </strong>
+
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        </div>
+
+        {% endif %}
+
+
+
+        <!-- MISSING SECTIONS
+             These are TEXT ONLY.
+             No cards.
+             No empty boxes.
+        -->
+
+        {% if not project_items
+              or not experience_items
+              or not internship_items
+              or not certification_items
+              or not achievement_items
+              or not leadership_items %}
+
+        <div class="missing-summary">
+
+            {% if not project_items %}
+                <strong>Projects:</strong>
+                Not detected.
+            {% endif %}
+
+            {% if not experience_items %}
+                <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+                <strong>Work Experience:</strong>
+                Not detected.
+            {% endif %}
+
+            {% if not internship_items %}
+                <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+                <strong>Internships:</strong>
+                Not detected.
+            {% endif %}
+
+            {% if not certification_items %}
+                <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+                <strong>Certifications:</strong>
+                Not detected.
+            {% endif %}
+
+            {% if not achievement_items %}
+                <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+                <strong>Achievements &amp; Hackathons:</strong>
+                Not detected.
+            {% endif %}
+
+            {% if not leadership_items %}
+                <span>&nbsp;&nbsp;•&nbsp;&nbsp;</span>
+                <strong>Positions of Responsibility:</strong>
+                Not detected.
+            {% endif %}
+
+        </div>
+
+        {% endif %}
+
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     RESUME HEALTH
+     ===================================================== -->
+
+<section class="section-block">
+
+
+    <div class="section-heading">
+
+        <h2>
+            Resume Health
+        </h2>
+
+        <p>
+            Point-wise overview of the main resume components
+        </p>
+
+    </div>
+
+
+
+    <div class="health-grid">
+
+
+        {% for label, item in resume_health.items() %}
+
+        <div class="health-item">
+
+            <div class="health-line">
+
+                <span>
+                    {{ label }}
+                </span>
+
+                <strong>
+                    {{ item.score }}%
+                </strong>
+
+            </div>
+
+            <div class="health-status">
+                {{ item.status }}
+            </div>
+
+        </div>
+
+        {% endfor %}
+
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     DETECTED TECHNICAL SKILLS
+     ===================================================== -->
+
+<section class="section-block">
+
+
+    <div class="section-heading">
+
+        <h2>
+            Detected Technical Skills
+        </h2>
+
+        <p>
+            Technical skills identified from the resume
+        </p>
+
+    </div>
+
+
+    <div class="glass-card">
+
+
+        {% if skills %}
+
+            <div class="skills">
+
+                {% for skill in skills %}
+
+                    <div class="skill">
+                        {{ skill }}
+                    </div>
+
+                {% endfor %}
+
+            </div>
+
+        {% else %}
+
+            <div class="missing-summary">
+                No recognized technical skills were detected.
+            </div>
+
+        {% endif %}
+
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     RESUME ANALYSIS
+     ===================================================== -->
+
+<section class="section-block">
+
+
+    <div class="section-heading">
+
+        <h2>
+            Resume Analysis
+        </h2>
+
+        <p>
+            Strengths and areas that need attention
+        </p>
+
+    </div>
+
+
+
+    <div class="analysis-grid">
+
+
+        <div class="glass-card">
+
+            <h3>
+                Strengths
+            </h3>
+
+            <ul class="result-list strength-list">
+
+                {% for item in strengths %}
+
+                    <li>
+                        ✓ {{ item }}
+                    </li>
+
+                {% endfor %}
+
+            </ul>
+
+        </div>
+
+
+
+        <div class="glass-card">
+
+            <h3>
+                Areas to Improve
+            </h3>
+
+            <ul class="result-list improvement-list">
+
+                {% for item in weaknesses %}
+
+                    <li>
+                        ! {{ item }}
+                    </li>
+
+                {% endfor %}
+
+            </ul>
+
+        </div>
+
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     AI IMPROVEMENT PLAN
+     ===================================================== -->
+
+<section class="section-block">
+
+    <div class="glass-card">
+
+        <h2>
+            AI Improvement Plan
+        </h2>
+
+
+        <ul class="result-list">
+
+            {% for suggestion in suggestions %}
+
+                <li>
+                    💡 {{ suggestion }}
+                </li>
+
+            {% endfor %}
+
+        </ul>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     AI SUMMARY
+     ===================================================== -->
+
+<section class="section-block">
+
+    <div class="glass-card">
+
+        <h2>
+            AI Resume Summary
+        </h2>
+
+        <p class="summary">
+            {{ ai_summary }}
+        </p>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     RESUME QUALITY
+     ===================================================== -->
+
+<section class="section-block">
+
+
+    <div class="section-heading">
+
+        <h2>
+            Resume Quality
+        </h2>
+
+        <p>
+            Key evaluation signals used in this analysis
+        </p>
+
+    </div>
+
+
+
+    <div class="quality-grid">
+
+
+        {% for label, value in content_signals.items() %}
+
+            <div class="quality-item">
+
+                <span>
+                    {{ label }}
+                </span>
+
+                <strong>
+                    {{ value }}%
+                </strong>
+
+            </div>
+
+        {% endfor %}
+
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================================================
+     RESUME DETAILS
+     ===================================================== -->
+
+<section class="section-block">
+
+
+    <div class="section-heading">
+
+        <h2>
+            Resume Details
+        </h2>
+
+        <p>
+            Additional content signals extracted from the resume
+        </p>
+
+    </div>
+
+
+
+    <div class="details-grid">
+
+
+        <div class="glass-card detail-card">
+
+            <span>
+                Word Count
+            </span>
+
+            <strong>
+                {{ word_count }}
+            </strong>
+
+        </div>
+
+
+
+        <div class="glass-card detail-card">
+
+            <span>
+                Action Signals
+            </span>
+
+            <strong>
+                {{ action_word_count }}
+            </strong>
+
+        </div>
+
+
+
+        <div class="glass-card detail-card">
+
+            <span>
+                Measurable Evidence
+            </span>
+
+            <strong>
+                {{ quantified_count }}
+            </strong>
+
+        </div>
+
+
+    </div>
+
+
+
+    <div
+        class="glass-card"
+        style="margin-top:12px;"
+    >
+
+        <details>
+
+            <summary>
+                ▶ View extracted resume text
+            </summary>
+
+            <textarea readonly>{{ text }}</textarea>
+
+        </details>
+
+
+
+        <div class="actions">
+
+            <a
+                href="/job-match"
+                class="action-btn primary-btn"
+            >
+                Find Matching Jobs →
+            </a>
+
+
+            <a
+                href="/dashboard"
+                class="action-btn secondary-btn"
+            >
+                Back to Dashboard
+            </a>
+
+        </div>
+
+    </div>
+
+
+</section>
+
+
+</div>
+
+
+
+<!-- =====================================================
+     FOOTER
+     ===================================================== -->
+
+<div class="footer">
+    AI Resume Analyzer
+</div>
+
+
+
+<script>
+/* =========================================================
+   PREMIUM UI MOTION — frontend only
+   ========================================================= */
+document.addEventListener("DOMContentLoaded", () => {
+
+    // Add reveal animation to major content sections.
+    const revealTargets = document.querySelectorAll(
+        ".section-block, .score-overview, .footer"
+    );
+
+    revealTargets.forEach((el, index) => {
+        el.classList.add("reveal");
+        el.style.transitionDelay = `${Math.min(index * 45, 260)}ms`;
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if(entry.isIntersecting){
+                entry.target.classList.add("revealed");
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.08 });
+
+    revealTargets.forEach(el => observer.observe(el));
+
+    // Count-up animation for percentage statistics.
+    const percentageNodes = document.querySelectorAll(
+        ".stat-card p, .presence-score strong, .quality-item strong, .health-line strong"
+    );
+
+    percentageNodes.forEach(node => {
+        const raw = node.textContent.trim();
+        const match = raw.match(/(\d+(?:\.\d+)?)\s*%/);
+        if(!match) return;
+
+        const target = parseFloat(match[1]);
+        if(Number.isNaN(target)) return;
+
+        const decimals = String(target).includes(".") ? 1 : 0;
+        const duration = 900;
+        const start = performance.now();
+
+        function tick(now){
+            const progress = Math.min((now - start) / duration, 1);
+            const eased = 1 - Math.pow(1 - progress, 3);
+            const value = target * eased;
+            node.textContent = `${value.toFixed(decimals)}%`;
+
+            if(progress < 1) requestAnimationFrame(tick);
+        }
+
+        node.textContent = `0${decimals ? ".0" : ""}%`;
+        requestAnimationFrame(tick);
+    });
+
+    // Add a subtle AI processing indicator.
+    const status = document.createElement("div");
+    status.className = "ai-status";
+    status.innerHTML = `
+        <span class="ai-status-dot"></span>
+        <span>AI analysis ready</span>
+    `;
+    document.body.appendChild(status);
+
+    // Small mouse-parallax effect for the hero on desktop.
+    const hero = document.querySelector(".hero");
+    if(hero && window.matchMedia("(pointer:fine)").matches){
+        hero.addEventListener("mousemove", (event) => {
+            const rect = hero.getBoundingClientRect();
+            const x = (event.clientX - rect.left) / rect.width - 0.5;
+            const y = (event.clientY - rect.top) / rect.height - 0.5;
+
+            hero.style.backgroundPosition =
+                `${50 + x * 4}% ${50 + y * 4}%`;
+        });
+
+        hero.addEventListener("mouseleave", () => {
+            hero.style.backgroundPosition = "50% 50%";
+        });
+    }
+});
+</script>
+
+</body>
+
+</html>

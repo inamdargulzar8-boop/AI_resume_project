@@ -1,0 +1,2032 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Settings - AI Resume Analyzer</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, Helvetica, sans-serif;
+            background:
+                radial-gradient(
+                    circle at top right,
+                    rgba(37, 99, 235, 0.10),
+                    transparent 30%
+                ),
+                #07111f;
+            color: #ffffff;
+            min-height: 100vh;
+        }
+
+        /* =========================
+           NAVBAR
+        ========================= */
+
+        .navbar {
+            height: 68px;
+            background: rgba(8, 15, 28, 0.96);
+
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+
+            padding: 0 32px;
+
+            border-bottom: 1px solid #1e293b;
+
+            position: sticky;
+            top: 0;
+            z-index: 100;
+
+            backdrop-filter: blur(12px);
+        }
+
+        .logo {
+            color: #60a5fa;
+            font-size: 21px;
+            font-weight: 700;
+            letter-spacing: 0.2px;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 7px;
+        }
+
+        .nav-links a {
+            color: #cbd5e1;
+            text-decoration: none;
+
+            padding: 9px 13px;
+
+            border-radius: 8px;
+
+            font-size: 13px;
+            font-weight: 600;
+
+            transition: all 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            color: #ffffff;
+            background: #172338;
+        }
+
+        .nav-links a.active {
+            color: #ffffff;
+            background: #1d4ed8;
+            box-shadow: 0 4px 14px rgba(37, 99, 235, 0.20);
+        }
+
+        .logout-link {
+            color: #fca5a5 !important;
+        }
+
+        .logout-link:hover {
+            background: rgba(239, 68, 68, 0.12) !important;
+        }
+
+
+        /* =========================
+           MAIN CONTAINER
+        ========================= */
+
+        .container {
+            width: min(1100px, calc(100% - 40px));
+            margin: 0 auto;
+
+            padding: 34px 0 45px;
+        }
+
+
+        /* =========================
+           PAGE HEADER
+        ========================= */
+
+        .page-header {
+            margin-bottom: 24px;
+        }
+
+        .page-header h1 {
+            margin: 0;
+
+            font-size: 30px;
+            line-height: 1.2;
+
+            letter-spacing: -0.5px;
+        }
+
+        .page-header p {
+            margin: 8px 0 0;
+
+            color: #94a3b8;
+
+            font-size: 14px;
+        }
+
+
+        /* =========================
+           SETTINGS GRID
+        ========================= */
+
+        .settings-grid {
+            display: grid;
+
+            grid-template-columns: 1fr 1fr;
+
+            gap: 18px;
+
+            align-items: start;
+        }
+
+
+        /* =========================
+           SETTINGS CARD
+        ========================= */
+
+        .settings-card {
+            background:
+                linear-gradient(
+                    145deg,
+                    rgba(30, 41, 59, 0.92),
+                    rgba(15, 23, 42, 0.94)
+                );
+
+            border: 1px solid #26364d;
+
+            border-radius: 15px;
+
+            padding: 22px;
+
+            box-shadow:
+                0 10px 30px rgba(0, 0, 0, 0.20);
+
+            transition:
+                transform 0.2s ease,
+                border-color 0.2s ease;
+        }
+
+        .settings-card:hover {
+            border-color: #36516f;
+        }
+
+        .settings-card.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .card-heading {
+            display: flex;
+
+            align-items: center;
+
+            gap: 12px;
+
+            margin-bottom: 5px;
+        }
+
+        .card-icon {
+            width: 38px;
+            height: 38px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            background: rgba(37, 99, 235, 0.14);
+
+            border: 1px solid rgba(96, 165, 250, 0.18);
+
+            border-radius: 10px;
+
+            font-size: 17px;
+        }
+
+        .settings-card h2 {
+            margin: 0;
+
+            font-size: 18px;
+        }
+
+        .settings-card > p {
+            color: #94a3b8;
+
+            margin: 0 0 18px;
+
+            font-size: 13px;
+
+            line-height: 1.5;
+        }
+
+
+        /* =========================
+           SETTING ROW
+        ========================= */
+
+        .setting-row {
+            display: flex;
+
+            justify-content: space-between;
+
+            align-items: center;
+
+            gap: 20px;
+
+            padding: 16px 0;
+
+            border-bottom: 1px solid #263449;
+        }
+
+        .setting-row:first-of-type {
+            padding-top: 5px;
+        }
+
+        .setting-row:last-child {
+            border-bottom: none;
+
+            padding-bottom: 4px;
+        }
+
+        .setting-info {
+            min-width: 0;
+        }
+
+        .setting-info h3 {
+            margin: 0 0 5px;
+
+            font-size: 14px;
+
+            color: #f1f5f9;
+        }
+
+        .setting-info p {
+            margin: 0;
+
+            color: #8493a7;
+
+            font-size: 12px;
+
+            line-height: 1.5;
+        }
+
+
+        /* =========================
+           INPUTS
+        ========================= */
+
+        .input-wrap {
+            min-width: 220px;
+        }
+
+        input[type="text"],
+        input[type="email"],
+        select {
+
+            width: 230px;
+
+            background: #0b1424;
+
+            color: #e2e8f0;
+
+            border: 1px solid #334155;
+
+            padding: 10px 12px;
+
+            border-radius: 8px;
+
+            outline: none;
+
+            font-size: 13px;
+
+            transition:
+                border-color 0.2s ease,
+                box-shadow 0.2s ease;
+        }
+
+        input[type="text"]:focus,
+        input[type="email"]:focus,
+        select:focus {
+
+            border-color: #60a5fa;
+
+            box-shadow:
+                0 0 0 3px rgba(96, 165, 250, 0.10);
+        }
+
+        input::placeholder {
+            color: #64748b;
+        }
+
+        select {
+            cursor: pointer;
+        }
+
+        select option {
+            background: #0f172a;
+            color: #ffffff;
+        }
+
+
+        /* =========================
+           TOGGLE
+        ========================= */
+
+        .toggle {
+            position: relative;
+
+            display: inline-block;
+
+            width: 48px;
+            height: 26px;
+
+            flex-shrink: 0;
+        }
+
+        .toggle input {
+            display: none;
+        }
+
+        .slider {
+            position: absolute;
+
+            inset: 0;
+
+            background: #334155;
+
+            border: 1px solid #475569;
+
+            border-radius: 30px;
+
+            cursor: pointer;
+
+            transition: 0.25s ease;
+        }
+
+        .slider:before {
+            content: "";
+
+            position: absolute;
+
+            width: 20px;
+            height: 20px;
+
+            left: 2px;
+            top: 2px;
+
+            background: #e2e8f0;
+
+            border-radius: 50%;
+
+            transition: 0.25s ease;
+
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.25);
+        }
+
+        .toggle input:checked + .slider {
+            background: #2563eb;
+
+            border-color: #3b82f6;
+        }
+
+        .toggle input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+
+
+        /* =========================
+           ACCOUNT INFORMATION
+        ========================= */
+
+        .account-box {
+            display: flex;
+
+            align-items: center;
+
+            gap: 15px;
+
+            padding: 15px;
+
+            background: rgba(15, 23, 42, 0.65);
+
+            border: 1px solid #27364a;
+
+            border-radius: 11px;
+        }
+
+        .account-avatar {
+            width: 44px;
+            height: 44px;
+
+            flex-shrink: 0;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            border-radius: 50%;
+
+            background: linear-gradient(
+                135deg,
+                #2563eb,
+                #60a5fa
+            );
+
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .account-text h3 {
+            margin: 0 0 4px;
+
+            font-size: 14px;
+        }
+
+        .account-text p {
+            margin: 0;
+
+            color: #94a3b8;
+
+            font-size: 12px;
+        }
+
+
+        /* =========================
+           ACTIONS
+        ========================= */
+
+        .actions {
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            margin-top: 20px;
+        }
+
+        .save-btn,
+        .reset-btn {
+
+            border: none;
+
+            padding: 11px 20px;
+
+            border-radius: 8px;
+
+            font-size: 13px;
+
+            font-weight: 700;
+
+            cursor: pointer;
+
+            transition:
+                background 0.2s ease,
+                transform 0.2s ease;
+        }
+
+        .save-btn {
+            background: #2563eb;
+
+            color: #ffffff;
+
+            box-shadow:
+                0 5px 15px rgba(37, 99, 235, 0.18);
+        }
+
+        .save-btn:hover {
+            background: #1d4ed8;
+
+            transform: translateY(-1px);
+        }
+
+        .reset-btn {
+            background: #1e293b;
+
+            color: #cbd5e1;
+
+            border: 1px solid #334155;
+        }
+
+        .reset-btn:hover {
+            background: #27364a;
+        }
+
+
+        /* =========================
+           SUCCESS MESSAGE
+        ========================= */
+
+        .success-message {
+
+            display: none;
+
+            margin-top: 15px;
+
+            padding: 11px 14px;
+
+            border-radius: 9px;
+
+            background: rgba(34, 197, 94, 0.09);
+
+            border: 1px solid rgba(34, 197, 94, 0.25);
+
+            color: #4ade80;
+
+            font-size: 13px;
+
+            animation: fadeIn 0.25s ease;
+        }
+
+        @keyframes fadeIn {
+
+            from {
+                opacity: 0;
+                transform: translateY(-4px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+
+        }
+
+
+        /* =========================
+           INFO NOTE
+        ========================= */
+
+        .info-note {
+
+            display: flex;
+
+            gap: 10px;
+
+            align-items: flex-start;
+
+            margin-top: 18px;
+
+            padding: 12px 14px;
+
+            border-radius: 9px;
+
+            background: rgba(59, 130, 246, 0.07);
+
+            border: 1px solid rgba(59, 130, 246, 0.16);
+
+            color: #93c5fd;
+
+            font-size: 12px;
+
+            line-height: 1.5;
+        }
+
+        .info-note-icon {
+            flex-shrink: 0;
+        }
+
+
+        /* =========================
+           FOOTER
+        ========================= */
+
+        .footer {
+
+            text-align: center;
+
+            color: #64748b;
+
+            font-size: 11px;
+
+            padding: 8px 0 25px;
+        }
+
+
+        /* =========================
+           RESPONSIVE
+        ========================= */
+
+        @media (max-width: 900px) {
+
+            .settings-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .settings-card.full-width {
+                grid-column: auto;
+            }
+
+        }
+
+
+        @media (max-width: 700px) {
+
+            .navbar {
+                height: auto;
+
+                padding: 15px 18px;
+
+                gap: 12px;
+
+                align-items: flex-start;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .container {
+                width: min(100% - 28px, 600px);
+
+                padding-top: 25px;
+            }
+
+            .page-header h1 {
+                font-size: 26px;
+            }
+
+            .settings-card {
+                padding: 18px;
+            }
+
+            .setting-row {
+                flex-direction: column;
+
+                align-items: flex-start;
+
+                gap: 12px;
+            }
+
+            input[type="text"],
+            input[type="email"],
+            select {
+                width: 100%;
+            }
+
+            .input-wrap {
+                width: 100%;
+                min-width: 0;
+            }
+
+            .actions {
+                width: 100%;
+            }
+
+            .save-btn,
+            .reset-btn {
+                flex: 1;
+            }
+
+        }
+
+
+        @media (max-width: 430px) {
+
+            .logo {
+                font-size: 18px;
+            }
+
+            .page-header h1 {
+                font-size: 24px;
+            }
+
+            .account-box {
+                padding: 12px;
+            }
+
+        }
+
+    
+/* =========================================================
+   PREMIUM SETTINGS UI — visual enhancement only
+   Existing HTML, IDs, localStorage and functions preserved.
+   ========================================================= */
+
+:root{
+    --p-bg:#050a14;
+    --p-panel:rgba(13,25,42,.78);
+    --p-panel-strong:rgba(15,30,50,.9);
+    --p-border:rgba(148,163,184,.14);
+    --p-blue:#38bdf8;
+    --p-cyan:#22d3ee;
+    --p-purple:#8b5cf6;
+    --p-green:#22c55e;
+}
+
+/* Richer background */
+body{
+    position:relative;
+    background:
+        radial-gradient(circle at 8% 12%,rgba(56,189,248,.10),transparent 26%),
+        radial-gradient(circle at 92% 8%,rgba(139,92,246,.12),transparent 28%),
+        radial-gradient(circle at 50% 100%,rgba(34,211,238,.06),transparent 32%),
+        #050a14;
+    background-attachment:fixed;
+}
+
+/* Very subtle animated grid */
+body::before{
+    content:"";
+    position:fixed;
+    inset:0;
+    z-index:-2;
+    pointer-events:none;
+    background-image:
+        linear-gradient(rgba(148,163,184,.025) 1px,transparent 1px),
+        linear-gradient(90deg,rgba(148,163,184,.025) 1px,transparent 1px);
+    background-size:48px 48px;
+    mask-image:linear-gradient(to bottom,black,transparent 90%);
+    animation:gridMove 25s linear infinite;
+}
+
+@keyframes gridMove{
+    from{transform:translate(0,0)}
+    to{transform:translate(48px,48px)}
+}
+
+/* Ambient glow */
+body::after{
+    content:"";
+    position:fixed;
+    width:360px;
+    height:360px;
+    right:-180px;
+    bottom:-180px;
+    z-index:-1;
+    pointer-events:none;
+    border-radius:50%;
+    background:rgba(56,189,248,.07);
+    filter:blur(70px);
+    animation:ambientGlow 8s ease-in-out infinite alternate;
+}
+
+@keyframes ambientGlow{
+    from{transform:scale(.85);opacity:.45}
+    to{transform:scale(1.15);opacity:.8}
+}
+
+/* Navbar */
+.navbar{
+    background:rgba(5,10,20,.76);
+    border-bottom:1px solid rgba(148,163,184,.10);
+    box-shadow:0 10px 35px rgba(0,0,0,.18);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+}
+
+.navbar::after{
+    content:"";
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:-1px;
+    height:1px;
+    background:linear-gradient(90deg,transparent,var(--p-cyan),var(--p-purple),transparent);
+    opacity:.65;
+}
+
+.logo{
+    position:relative;
+    color:#7dd3fc;
+    text-shadow:0 0 20px rgba(56,189,248,.25);
+    transition:.3s ease;
+}
+
+.logo:hover{
+    transform:translateY(-1px);
+    text-shadow:0 0 28px rgba(56,189,248,.5);
+}
+
+.nav-links a{
+    position:relative;
+    transition:transform .25s ease,color .25s ease,background .25s ease;
+}
+
+.nav-links a::after{
+    content:"";
+    position:absolute;
+    left:13px;
+    right:13px;
+    bottom:3px;
+    height:2px;
+    border-radius:4px;
+    background:linear-gradient(90deg,var(--p-cyan),var(--p-purple));
+    transform:scaleX(0);
+    transition:transform .25s ease;
+}
+
+.nav-links a:hover{
+    transform:translateY(-2px);
+    background:rgba(56,189,248,.08);
+}
+
+.nav-links a:hover::after{
+    transform:scaleX(1);
+}
+
+.nav-links a.active{
+    background:linear-gradient(135deg,#2563eb,#38bdf8);
+    box-shadow:0 5px 20px rgba(37,99,235,.25);
+}
+
+/* Main heading */
+.page-header{
+    position:relative;
+    padding:10px 0 10px 18px;
+    animation:headerIn .7s cubic-bezier(.2,.8,.2,1) both;
+}
+
+.page-header::before{
+    content:"";
+    position:absolute;
+    left:0;
+    top:12px;
+    bottom:12px;
+    width:3px;
+    border-radius:5px;
+    background:linear-gradient(var(--p-cyan),var(--p-purple));
+    box-shadow:0 0 16px rgba(56,189,248,.35);
+}
+
+.page-header h1{
+    font-size:clamp(28px,4vw,38px);
+    letter-spacing:-1px;
+    background:linear-gradient(90deg,#fff,#bae6fd,#c4b5fd,#fff);
+    background-size:240% auto;
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+    animation:titleGradient 7s linear infinite;
+}
+
+.page-header p{
+    max-width:650px;
+}
+
+@keyframes headerIn{
+    from{opacity:0;transform:translateY(14px)}
+    to{opacity:1;transform:none}
+}
+
+@keyframes titleGradient{
+    to{background-position:240% center}
+}
+
+/* Cards */
+.settings-card{
+    position:relative;
+    overflow:hidden;
+    background:
+        linear-gradient(145deg,rgba(17,33,53,.82),rgba(7,16,29,.82));
+    border:1px solid var(--p-border);
+    border-radius:17px;
+    box-shadow:
+        0 14px 40px rgba(0,0,0,.20),
+        0 0 30px rgba(56,189,248,.035);
+    backdrop-filter:blur(16px);
+    -webkit-backdrop-filter:blur(16px);
+    transition:
+        transform .35s cubic-bezier(.2,.8,.2,1),
+        border-color .3s ease,
+        box-shadow .3s ease;
+}
+
+.settings-card::before{
+    content:"";
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background:linear-gradient(
+        120deg,
+        transparent 20%,
+        rgba(255,255,255,.045) 48%,
+        transparent 72%
+    );
+    transform:translateX(-125%);
+    transition:transform .75s ease;
+}
+
+.settings-card:hover{
+    transform:translateY(-5px);
+    border-color:rgba(56,189,248,.24);
+    box-shadow:
+        0 20px 48px rgba(0,0,0,.27),
+        0 0 35px rgba(56,189,248,.07);
+}
+
+.settings-card:hover::before{
+    transform:translateX(125%);
+}
+
+/* Different glow for AI card */
+.settings-card.full-width{
+    background:
+        radial-gradient(circle at 85% 15%,rgba(139,92,246,.12),transparent 28%),
+        linear-gradient(145deg,rgba(17,33,53,.86),rgba(7,16,29,.86));
+}
+
+/* Icons */
+.card-icon{
+    position:relative;
+    overflow:hidden;
+    background:linear-gradient(135deg,rgba(37,99,235,.20),rgba(139,92,246,.16));
+    border-color:rgba(96,165,250,.22);
+    box-shadow:0 0 20px rgba(56,189,248,.08);
+    transition:transform .3s ease,box-shadow .3s ease;
+}
+
+.card-icon::after{
+    content:"";
+    position:absolute;
+    width:55%;
+    height:180%;
+    top:-40%;
+    left:-90%;
+    transform:rotate(20deg);
+    background:rgba(255,255,255,.15);
+    transition:left .55s ease;
+}
+
+.settings-card:hover .card-icon{
+    transform:translateY(-2px) rotate(-2deg);
+    box-shadow:0 0 25px rgba(56,189,248,.18);
+}
+
+.settings-card:hover .card-icon::after{
+    left:140%;
+}
+
+/* Setting rows */
+.setting-row{
+    position:relative;
+    border-bottom-color:rgba(148,163,184,.08);
+    transition:padding-left .25s ease,background .25s ease;
+}
+
+.setting-row:hover{
+    padding-left:7px;
+}
+
+.setting-row::before{
+    content:"";
+    position:absolute;
+    left:0;
+    top:50%;
+    width:2px;
+    height:0;
+    border-radius:3px;
+    background:linear-gradient(var(--p-cyan),var(--p-purple));
+    transform:translateY(-50%);
+    transition:height .25s ease;
+}
+
+.setting-row:hover::before{
+    height:55%;
+}
+
+/* Inputs */
+input[type="text"],
+input[type="email"],
+select{
+    background:rgba(5,14,26,.78);
+    border-color:rgba(71,85,105,.75);
+    box-shadow:inset 0 0 18px rgba(0,0,0,.12);
+    transition:
+        border-color .25s ease,
+        box-shadow .25s ease,
+        transform .25s ease;
+}
+
+input[type="text"]:hover,
+input[type="email"]:hover,
+select:hover{
+    border-color:rgba(96,165,250,.45);
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+select:focus{
+    border-color:var(--p-blue);
+    box-shadow:
+        0 0 0 3px rgba(56,189,248,.08),
+        0 0 22px rgba(56,189,248,.08);
+    transform:translateY(-1px);
+}
+
+/* Premium toggles */
+.toggle{
+    filter:drop-shadow(0 3px 8px rgba(0,0,0,.18));
+}
+
+.slider{
+    background:rgba(51,65,85,.9);
+    transition:background .3s ease,box-shadow .3s ease;
+}
+
+.slider:before{
+    transition:transform .3s cubic-bezier(.2,.8,.2,1),box-shadow .3s ease;
+}
+
+.toggle input:checked + .slider{
+    background:linear-gradient(90deg,#2563eb,#38bdf8);
+    box-shadow:0 0 18px rgba(56,189,248,.20);
+}
+
+.toggle input:checked + .slider:before{
+    box-shadow:0 0 12px rgba(255,255,255,.45);
+}
+
+/* Account box */
+.account-box{
+    background:linear-gradient(135deg,rgba(15,23,42,.62),rgba(8,18,31,.62));
+    border-color:rgba(148,163,184,.11);
+    transition:transform .3s ease,border-color .3s ease,box-shadow .3s ease;
+}
+
+.account-box:hover{
+    transform:translateY(-2px);
+    border-color:rgba(56,189,248,.20);
+    box-shadow:0 12px 28px rgba(0,0,0,.18);
+}
+
+.account-avatar{
+    position:relative;
+    box-shadow:0 0 24px rgba(37,99,235,.20);
+    animation:avatarPulse 4s ease-in-out infinite;
+}
+
+@keyframes avatarPulse{
+    0%,100%{box-shadow:0 0 18px rgba(37,99,235,.16)}
+    50%{box-shadow:0 0 30px rgba(56,189,248,.28)}
+}
+
+/* Info note */
+.info-note{
+    position:relative;
+    overflow:hidden;
+    background:rgba(56,189,248,.055);
+    border-color:rgba(56,189,248,.14);
+}
+
+.info-note::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(100deg,transparent,rgba(255,255,255,.06),transparent);
+    transform:translateX(-110%);
+    animation:noteSweep 5s ease-in-out infinite;
+}
+
+@keyframes noteSweep{
+    0%,55%{transform:translateX(-110%)}
+    75%,100%{transform:translateX(110%)}
+}
+
+/* Buttons */
+.actions{
+    animation:actionsIn .7s .15s ease both;
+}
+
+.save-btn,
+.reset-btn{
+    position:relative;
+    overflow:hidden;
+    transition:
+        transform .25s ease,
+        box-shadow .25s ease,
+        background .25s ease;
+}
+
+.save-btn{
+    background:linear-gradient(135deg,#2563eb,#38bdf8);
+    box-shadow:0 8px 24px rgba(37,99,235,.22);
+}
+
+.save-btn::after,
+.reset-btn::after{
+    content:"";
+    position:absolute;
+    top:0;
+    left:-120%;
+    width:70%;
+    height:100%;
+    transform:skewX(-20deg);
+    background:rgba(255,255,255,.18);
+    transition:left .55s ease;
+}
+
+.save-btn:hover,
+.reset-btn:hover{
+    transform:translateY(-3px);
+}
+
+.save-btn:hover{
+    background:linear-gradient(135deg,#1d4ed8,#22d3ee);
+    box-shadow:0 12px 30px rgba(37,99,235,.30);
+}
+
+.save-btn:hover::after,
+.reset-btn:hover::after{
+    left:140%;
+}
+
+.reset-btn:hover{
+    border-color:rgba(148,163,184,.35);
+    box-shadow:0 8px 20px rgba(0,0,0,.18);
+}
+
+/* Success message */
+.success-message{
+    position:relative;
+    overflow:hidden;
+    box-shadow:0 8px 25px rgba(34,197,94,.08);
+}
+
+/* Footer */
+.footer{
+    position:relative;
+}
+
+.footer::before{
+    content:"";
+    display:block;
+    width:150px;
+    height:1px;
+    margin:0 auto 12px;
+    background:linear-gradient(90deg,transparent,var(--p-cyan),var(--p-purple),transparent);
+    opacity:.5;
+}
+
+/* Scroll reveal */
+.premium-reveal{
+    opacity:0;
+    transform:translateY(18px);
+    transition:opacity .65s ease,transform .65s cubic-bezier(.2,.8,.2,1);
+}
+
+.premium-reveal.visible{
+    opacity:1;
+    transform:none;
+}
+
+/* Floating AI assistant indicator */
+.ai-presence{
+    position:fixed;
+    right:20px;
+    bottom:20px;
+    z-index:500;
+    display:flex;
+    align-items:center;
+    gap:8px;
+    padding:9px 12px;
+    border-radius:999px;
+    background:rgba(5,12,23,.78);
+    border:1px solid rgba(56,189,248,.17);
+    color:#bae6fd;
+    font-size:10px;
+    letter-spacing:.25px;
+    box-shadow:0 10px 30px rgba(0,0,0,.28);
+    backdrop-filter:blur(14px);
+    animation:presenceFloat 4s ease-in-out infinite;
+}
+
+.ai-presence-dot{
+    width:7px;
+    height:7px;
+    border-radius:50%;
+    background:#22c55e;
+    box-shadow:0 0 12px rgba(34,197,94,.85);
+    animation:presenceDot 1.8s ease-in-out infinite;
+}
+
+@keyframes presenceFloat{
+    0%,100%{transform:translateY(0)}
+    50%{transform:translateY(-5px)}
+}
+
+@keyframes presenceDot{
+    0%,100%{opacity:.55;transform:scale(.9)}
+    50%{opacity:1;transform:scale(1.15)}
+}
+
+@keyframes actionsIn{
+    from{opacity:0;transform:translateY(10px)}
+    to{opacity:1;transform:none}
+}
+
+@media(max-width:700px){
+    .ai-presence{
+        right:12px;
+        bottom:12px;
+    }
+
+    .settings-card:hover{
+        transform:translateY(-2px);
+    }
+
+    .page-header{
+        padding-left:14px;
+    }
+}
+
+@media(prefers-reduced-motion:reduce){
+    *,*::before,*::after{
+        animation-duration:.01ms !important;
+        animation-iteration-count:1 !important;
+        transition-duration:.01ms !important;
+    }
+}
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<!-- =========================
+     NAVBAR
+========================= -->
+
+<div class="navbar">
+
+    <div class="logo">
+        AI Resume
+    </div>
+
+    <div class="nav-links">
+
+        <a href="/">
+            Home
+        </a>
+
+        <a href="/dashboard">
+            Dashboard
+        </a>
+
+        <a href="/my-resume">
+            My Resume
+        </a>
+
+        <a href="/settings" class="active">
+            Settings
+        </a>
+
+        <a href="/logout" class="logout-link">
+            Logout
+        </a>
+
+    </div>
+
+</div>
+
+
+<!-- =========================
+     MAIN
+========================= -->
+
+<div class="container">
+
+
+    <!-- =========================
+         PAGE HEADER
+    ========================= -->
+
+    <div class="page-header">
+
+        <h1>
+            Settings
+        </h1>
+
+        <p>
+            Manage your profile and personalize your AI Resume Analyzer experience.
+        </p>
+
+    </div>
+
+
+    <div class="settings-grid">
+
+
+        <!-- =========================
+             PROFILE SETTINGS
+        ========================= -->
+
+        <div class="settings-card">
+
+            <div class="card-heading">
+
+                <div class="card-icon">
+                    👤
+                </div>
+
+                <h2>
+                    Profile Preferences
+                </h2>
+
+            </div>
+
+            <p>
+                Manage the basic information used in your personal resume assistant.
+            </p>
+
+
+            <div class="setting-row">
+
+                <div class="setting-info">
+
+                    <h3>
+                        Display Name
+                    </h3>
+
+                    <p>
+                        Name shown inside your personal dashboard.
+                    </p>
+
+                </div>
+
+                <input
+                    type="text"
+                    id="displayName"
+                    placeholder="Enter your name"
+                    autocomplete="name"
+                >
+
+            </div>
+
+
+            <div class="setting-row">
+
+                <div class="setting-info">
+
+                    <h3>
+                        Email
+                    </h3>
+
+                    <p>
+                        Your account email address.
+                    </p>
+
+                </div>
+
+                <input
+                    type="email"
+                    id="userEmail"
+                    placeholder="Enter your email"
+                    autocomplete="email"
+                >
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             ACCOUNT
+        ========================= -->
+
+        <div class="settings-card">
+
+            <div class="card-heading">
+
+                <div class="card-icon">
+                    🔐
+                </div>
+
+                <h2>
+                    Account
+                </h2>
+
+            </div>
+
+            <p>
+                Information about your AI Resume Analyzer account.
+            </p>
+
+
+            <div class="account-box">
+
+                <div class="account-avatar">
+                    AI
+                </div>
+
+                <div class="account-text">
+
+                    <h3>
+                        Personal Career Account
+                    </h3>
+
+                    <p>
+                        Your resume analysis and career preferences are linked to your account.
+                    </p>
+
+                </div>
+
+            </div>
+
+
+            <div class="info-note">
+
+                <span class="info-note-icon">
+                    ℹ️
+                </span>
+
+                <span>
+                    Your uploaded resume is handled through your account.
+                    Use <strong>My Resume</strong> from the dashboard to view your existing analysis.
+                </span>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             NOTIFICATIONS
+        ========================= -->
+
+        <div class="settings-card">
+
+            <div class="card-heading">
+
+                <div class="card-icon">
+                    🔔
+                </div>
+
+                <h2>
+                    Notifications
+                </h2>
+
+            </div>
+
+            <p>
+                Choose which personal application notifications you want to see.
+            </p>
+
+
+            <div class="setting-row">
+
+                <div class="setting-info">
+
+                    <h3>
+                        Resume Analysis Updates
+                    </h3>
+
+                    <p>
+                        Show updates when your resume analysis is completed.
+                    </p>
+
+                </div>
+
+
+                <label class="toggle">
+
+                    <input
+                        type="checkbox"
+                        id="analysisNotification"
+                    >
+
+                    <span class="slider"></span>
+
+                </label>
+
+            </div>
+
+
+            <div class="setting-row">
+
+                <div class="setting-info">
+
+                    <h3>
+                        Career Suggestions
+                    </h3>
+
+                    <p>
+                        Receive personalized career and resume improvement suggestions.
+                    </p>
+
+                </div>
+
+
+                <label class="toggle">
+
+                    <input
+                        type="checkbox"
+                        id="careerNotification"
+                    >
+
+                    <span class="slider"></span>
+
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             DISPLAY SETTINGS
+        ========================= -->
+
+        <div class="settings-card">
+
+            <div class="card-heading">
+
+                <div class="card-icon">
+                    🎨
+                </div>
+
+                <h2>
+                    Display
+                </h2>
+
+            </div>
+
+            <p>
+                Personalize how information is displayed in your application.
+            </p>
+
+
+            <div class="setting-row">
+
+                <div class="setting-info">
+
+                    <h3>
+                        Dashboard Density
+                    </h3>
+
+                    <p>
+                        Choose between a comfortable or compact information layout.
+                    </p>
+
+                </div>
+
+
+                <select id="dashboardDensity">
+
+                    <option value="comfortable">
+                        Comfortable
+                    </option>
+
+                    <option value="compact">
+                        Compact
+                    </option>
+
+                </select>
+
+            </div>
+
+
+            <div class="setting-row">
+
+                <div class="setting-info">
+
+                    <h3>
+                        Resume Preview
+                    </h3>
+
+                    <p>
+                        Open your complete resume analysis when selecting My Resume.
+                    </p>
+
+                </div>
+
+
+                <label class="toggle">
+
+                    <input
+                        type="checkbox"
+                        id="resumePreview"
+                        checked
+                    >
+
+                    <span class="slider"></span>
+
+                </label>
+
+            </div>
+
+        </div>
+
+
+        <!-- =========================
+             AI PREFERENCES
+        ========================= -->
+
+        <div class="settings-card full-width">
+
+            <div class="card-heading">
+
+                <div class="card-icon">
+                    🤖
+                </div>
+
+                <h2>
+                    AI Career Assistant
+                </h2>
+
+            </div>
+
+            <p>
+                Preferences for the AI features of your resume and career assistant.
+            </p>
+
+
+            <div class="setting-row">
+
+                <div class="setting-info">
+
+                    <h3>
+                        Personalized Suggestions
+                    </h3>
+
+                    <p>
+                        Allow the application to use your resume analysis when generating career improvement suggestions.
+                    </p>
+
+                </div>
+
+
+                <label class="toggle">
+
+                    <input
+                        type="checkbox"
+                        id="personalizedSuggestions"
+                        checked
+                    >
+
+                    <span class="slider"></span>
+
+                </label>
+
+            </div>
+
+
+            <div class="setting-row">
+
+                <div class="setting-info">
+
+                    <h3>
+                        Resume-Based Assistance
+                    </h3>
+
+                    <p>
+                        Use your analyzed resume as context for future AI career assistance.
+                    </p>
+
+                </div>
+
+
+                <label class="toggle">
+
+                    <input
+                        type="checkbox"
+                        id="resumeBasedAssistant"
+                        checked
+                    >
+
+                    <span class="slider"></span>
+
+                </label>
+
+            </div>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- =========================
+         ACTIONS
+    ========================= -->
+
+    <div class="actions">
+
+        <button
+            class="save-btn"
+            type="button"
+            onclick="saveSettings()"
+        >
+            Save Settings
+        </button>
+
+
+        <button
+            class="reset-btn"
+            type="button"
+            onclick="resetSettings()"
+        >
+            Reset
+        </button>
+
+    </div>
+
+
+    <div
+        id="successMessage"
+        class="success-message"
+    >
+        ✓ Settings saved successfully.
+    </div>
+
+
+</div>
+
+
+<!-- =========================
+     FOOTER
+========================= -->
+
+<div class="footer">
+
+    © 2026 AI Resume Analyzer |
+    Your Personal AI Career Assistant
+
+</div>
+
+
+<script>
+
+
+    /* =========================
+       SETTINGS STORAGE KEY
+    ========================= */
+
+    const SETTINGS_KEY = "resumeAnalyzerSettings";
+
+
+    /* =========================
+       DEFAULT SETTINGS
+    ========================= */
+
+    const defaultSettings = {
+
+        displayName: "",
+
+        userEmail: "",
+
+        analysisNotification: false,
+
+        careerNotification: false,
+
+        dashboardDensity: "comfortable",
+
+        resumePreview: true,
+
+        personalizedSuggestions: true,
+
+        resumeBasedAssistant: true
+
+    };
+
+
+    /* =========================
+       GET SETTINGS
+    ========================= */
+
+    function getSettings() {
+
+        try {
+
+            const saved =
+                JSON.parse(
+                    localStorage.getItem(SETTINGS_KEY)
+                );
+
+            return {
+                ...defaultSettings,
+                ...(saved || {})
+            };
+
+        } catch (error) {
+
+            return {
+                ...defaultSettings
+            };
+
+        }
+
+    }
+
+
+    /* =========================
+       LOAD SETTINGS
+    ========================= */
+
+    function loadSettings() {
+
+        const settings = getSettings();
+
+
+        document.getElementById("displayName").value =
+            settings.displayName || "";
+
+
+        document.getElementById("userEmail").value =
+            settings.userEmail || "";
+
+
+        document.getElementById("analysisNotification").checked =
+            Boolean(settings.analysisNotification);
+
+
+        document.getElementById("careerNotification").checked =
+            Boolean(settings.careerNotification);
+
+
+        document.getElementById("dashboardDensity").value =
+            settings.dashboardDensity || "comfortable";
+
+
+        document.getElementById("resumePreview").checked =
+            settings.resumePreview !== false;
+
+
+        document.getElementById("personalizedSuggestions").checked =
+            settings.personalizedSuggestions !== false;
+
+
+        document.getElementById("resumeBasedAssistant").checked =
+            settings.resumeBasedAssistant !== false;
+
+    }
+
+
+    /* =========================
+       SAVE SETTINGS
+    ========================= */
+
+    function saveSettings() {
+
+        const settings = {
+
+            displayName:
+                document.getElementById("displayName").value.trim(),
+
+            userEmail:
+                document.getElementById("userEmail").value.trim(),
+
+            analysisNotification:
+                document.getElementById("analysisNotification").checked,
+
+            careerNotification:
+                document.getElementById("careerNotification").checked,
+
+            dashboardDensity:
+                document.getElementById("dashboardDensity").value,
+
+            resumePreview:
+                document.getElementById("resumePreview").checked,
+
+            personalizedSuggestions:
+                document.getElementById("personalizedSuggestions").checked,
+
+            resumeBasedAssistant:
+                document.getElementById("resumeBasedAssistant").checked
+
+        };
+
+
+        localStorage.setItem(
+            SETTINGS_KEY,
+            JSON.stringify(settings)
+        );
+
+
+        showMessage(
+            "✓ Settings saved successfully."
+        );
+
+    }
+
+
+    /* =========================
+       RESET SETTINGS
+    ========================= */
+
+    function resetSettings() {
+
+        localStorage.removeItem(
+            SETTINGS_KEY
+        );
+
+
+        loadSettings();
+
+
+        showMessage(
+            "✓ Settings reset successfully."
+        );
+
+    }
+
+
+    /* =========================
+       SUCCESS MESSAGE
+    ========================= */
+
+    function showMessage(message) {
+
+        const messageBox =
+            document.getElementById("successMessage");
+
+
+        messageBox.innerText = message;
+
+        messageBox.style.display = "block";
+
+
+        setTimeout(function() {
+
+            messageBox.style.display = "none";
+
+        }, 2500);
+
+    }
+
+
+    /* =========================
+       LOAD WHEN PAGE OPENS
+    ========================= */
+
+    loadSettings();
+
+
+</script>
+
+
+
+<script>
+/* =========================================================
+   PREMIUM SETTINGS MOTION — frontend only
+   Existing save/load/reset logic remains untouched.
+   ========================================================= */
+document.addEventListener("DOMContentLoaded", function(){
+
+    /* Reveal settings cards as they enter the viewport */
+    const cards = document.querySelectorAll(".settings-card");
+    cards.forEach((card, index) => {
+        card.classList.add("premium-reveal");
+        card.style.transitionDelay = `${Math.min(index * 80, 320)}ms`;
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if(entry.isIntersecting){
+                entry.target.classList.add("visible");
+                observer.unobserve(entry.target);
+            }
+        });
+    }, { threshold: 0.08 });
+
+    cards.forEach(card => observer.observe(card));
+
+    /* Add a tiny live AI indicator */
+    const presence = document.createElement("div");
+    presence.className = "ai-presence";
+    presence.innerHTML = `
+        <span class="ai-presence-dot"></span>
+        <span>AI assistant ready</span>
+    `;
+    document.body.appendChild(presence);
+
+    /* Make toggles feel responsive with a soft pulse */
+    document.querySelectorAll(".toggle input").forEach(toggle => {
+        toggle.addEventListener("change", function(){
+            const slider = this.nextElementSibling;
+            if(slider){
+                slider.animate(
+                    [
+                        { transform:"scale(1)" },
+                        { transform:"scale(1.08)" },
+                        { transform:"scale(1)" }
+                    ],
+                    { duration:260, easing:"ease-out" }
+                );
+            }
+        });
+    });
+
+});
+</script>
+
+</body>
+
+</html>

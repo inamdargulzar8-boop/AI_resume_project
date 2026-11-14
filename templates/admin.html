@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <title>Admin Dashboard</title>
+
+    <link rel="stylesheet"
+    href="{{ url_for('static', filename='admin.css') }}">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+</head>
+
+<body>
+
+    <!-- SIDEBAR -->
+
+    <div class="sidebar">
+
+        <h2 class="logo">AI Resume</h2>
+
+        <ul>
+
+            <li><a class="active" href="/admin">Dashboard</a></li>
+
+            <li><a href="/matching">Candidate Matching</a></li>
+
+            <li><a href="/analytics">Analytics</a></li>
+
+            <li><a href="/ats-report">ATS Reports</a></li>
+
+            <li><a href="/recruiters">Recruiters</a></li>
+
+            <li><a href="/settings">Settings</a></li>
+
+            <li><a href="/">Logout</a></li>
+
+        </ul>
+
+    </div>
+
+    <!-- MAIN CONTENT -->
+
+    <div class="main-content">
+
+        <!-- TOPBAR -->
+
+        <div class="topbar">
+
+            <div>
+
+                <h1>Admin Dashboard</h1>
+
+                <p>
+                    AI powered recruiter analytics & candidate management
+                </p>
+
+            </div>
+
+            <button class="report-btn">
+                Generate Report
+            </button>
+
+        </div>
+
+        <!-- STATS -->
+
+        <div class="stats">
+
+            <div class="card">
+                <h3>Total Candidates</h3>
+                <p>{{ total_candidates }}</p>
+            </div>
+
+            <div class="card">
+                <h3>Selected</h3>
+                <p>{{ selected }}</p>
+            </div>
+
+            <div class="card">
+                <h3>Rejected</h3>
+                <p>{{ rejected }}</p>
+            </div>
+
+            <div class="card">
+                <h3>Average ATS</h3>
+                <p>{{ average_ats }}%</p>
+            </div>
+
+        </div>
+
+        <!-- CHARTS -->
+
+        <div class="charts">
+
+            <div class="chart-box">
+
+                <h2>ATS Analytics</h2>
+
+                <canvas id="atsChart"></canvas>
+
+            </div>
+
+            <div class="chart-box">
+
+                <h2>Candidate ATS Scores</h2>
+
+                <canvas id="skillChart"></canvas>
+
+            </div>
+
+        </div>
+
+        <!-- TABLE -->
+
+        <div class="table-section">
+
+            <div class="table-header">
+
+                <h2>Recent Candidates</h2>
+
+                <input type="text"
+                placeholder="Search Candidate">
+
+            </div>
+
+            <table>
+
+                <tr>
+
+                    <th>Name</th>
+                    <th>ATS Score</th>
+                    <th>Skills</th>
+                    <th>Status</th>
+
+                </tr>
+
+                {% for candidate in recent_candidates %}
+
+                <tr>
+
+                    <td>{{ candidate[1] }}</td>
+
+                    <td>{{ candidate[6] }}%</td>
+
+                    <td>{{ candidate[5] }}</td>
+
+                    <td>
+
+                        {% if candidate[8] == "Selected" %}
+
+                            <span class="selected">
+                                Selected
+                            </span>
+
+                        {% elif candidate[8] == "Review" %}
+
+                            <span class="review">
+                                Review
+                            </span>
+
+                        {% else %}
+
+                            <span class="rejected">
+                                Rejected
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+            </table>
+
+        </div>
+
+    </div>
+
+    <!-- CHART JS -->
+
+    <script>
+
+        // ATS ANALYTICS
+
+        const atsCtx =
+        document.getElementById('atsChart');
+
+        new Chart(atsCtx, {
+
+            type:'line',
+
+            data:{
+
+                labels:[
+
+                    {% for candidate in candidates %}
+
+                        '{{ candidate[1] }}',
+
+                    {% endfor %}
+
+                ],
+
+                datasets:[{
+
+                    label:'ATS Score',
+
+                    data:[
+
+                        {% for candidate in candidates %}
+
+                            {{ candidate[6] }},
+
+                        {% endfor %}
+
+                    ],
+
+                    borderColor:'#38bdf8',
+
+                    backgroundColor:'rgba(56,189,248,0.2)',
+
+                    fill:true,
+
+                    tension:0.4
+
+                }]
+
+            },
+
+            options:{
+
+                responsive:true,
+
+                plugins:{
+                    legend:{
+                        labels:{
+                            color:'white'
+                        }
+                    }
+                },
+
+                scales:{
+
+                    x:{
+                        ticks:{
+                            color:'white'
+                        },
+                        grid:{
+                            color:'#334155'
+                        }
+                    },
+
+                    y:{
+                        ticks:{
+                            color:'white'
+                        },
+                        grid:{
+                            color:'#334155'
+                        }
+                    }
+
+                }
+
+            }
+
+        });
+
+        // BAR GRAPH
+
+        const skillCtx =
+        document.getElementById('skillChart');
+
+        new Chart(skillCtx, {
+
+            type:'bar',
+
+            data:{
+
+                labels:[
+
+                    {% for candidate in candidates %}
+
+                        '{{ candidate[1] }}',
+
+                    {% endfor %}
+
+                ],
+
+                datasets:[{
+
+                    label:'ATS Score',
+
+                    data:[
+
+                        {% for candidate in candidates %}
+
+                            {{ candidate[6] }},
+
+                        {% endfor %}
+
+                    ],
+
+                    backgroundColor:[
+                        '#38bdf8',
+                        '#2563eb',
+                        '#7c3aed',
+                        '#06b6d4',
+                        '#22c55e',
+                        '#f97316',
+                        '#e11d48'
+                    ],
+
+                    borderRadius:10
+
+                }]
+
+            },
+
+            options:{
+
+                responsive:true,
+
+                plugins:{
+                    legend:{
+                        labels:{
+                            color:'white'
+                        }
+                    }
+                },
+
+                scales:{
+
+                    x:{
+                        ticks:{
+                            color:'white'
+                        },
+                        grid:{
+                            color:'#334155'
+                        }
+                    },
+
+                    y:{
+                        ticks:{
+                            color:'white'
+                        },
+                        grid:{
+                            color:'#334155'
+                        }
+                    }
+
+                }
+
+            }
+
+        });
+
+    </script>
+
+</body>
+</html>

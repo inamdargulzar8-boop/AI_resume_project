@@ -1,0 +1,1852 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
+    <title>AI Career Assistant</title>
+
+    <style>
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family:
+                Inter,
+                Arial,
+                Helvetica,
+                sans-serif;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #070b18 0%,
+                    #0b1020 50%,
+                    #070a14 100%
+                );
+
+            color: #f8fafc;
+
+            height: 100vh;
+
+            overflow: hidden;
+        }
+
+
+        /* =====================================================
+           APP
+           ===================================================== */
+
+        .app {
+            display: flex;
+
+            width: 100%;
+            height: 100vh;
+        }
+
+
+        /* =====================================================
+           SIDEBAR
+           ===================================================== */
+
+        .sidebar {
+            width: 245px;
+            min-width: 245px;
+
+            height: 100vh;
+
+            background:
+                linear-gradient(
+                    180deg,
+                    #0a1020,
+                    #070b16
+                );
+
+            border-right: 1px solid #18243a;
+
+            padding: 28px 16px;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+
+            padding:
+                0
+                10px
+                30px;
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+
+            border-radius: 12px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 21px;
+            font-weight: 800;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #20b9ff,
+                    #536dfe
+                );
+
+            box-shadow:
+                0 0 24px
+                rgba(
+                    32,
+                    185,
+                    255,
+                    0.25
+                );
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 800;
+        }
+
+        .logo-text span {
+            color: #31bfff;
+        }
+
+        .nav {
+            display: flex;
+            flex-direction: column;
+
+            gap: 7px;
+        }
+
+        .nav a {
+            text-decoration: none;
+
+            color: #9aa8bf;
+
+            padding: 13px 14px;
+
+            border-radius: 11px;
+
+            display: flex;
+            align-items: center;
+
+            gap: 12px;
+
+            font-size: 14px;
+
+            transition: 0.2s ease;
+        }
+
+        .nav a:hover {
+            background: #111b30;
+            color: #ffffff;
+        }
+
+        .nav a.active {
+            color: #ffffff;
+
+            background:
+                linear-gradient(
+                    90deg,
+                    rgba(43,137,226,0.30),
+                    rgba(40,93,170,0.16)
+                );
+
+            border:
+                1px solid
+                rgba(
+                    60,
+                    151,
+                    255,
+                    0.18
+                );
+        }
+
+        .nav-icon {
+            width: 20px;
+            text-align: center;
+        }
+
+
+        /* =====================================================
+           MAIN
+           ===================================================== */
+
+        .main {
+            flex: 1;
+
+            min-width: 0;
+
+            height: 100vh;
+
+            display: flex;
+
+            flex-direction: column;
+        }
+
+
+        /* =====================================================
+           TOP
+           ===================================================== */
+
+        .top {
+            text-align: center;
+
+            padding:
+                24px
+                40px
+                12px;
+
+            flex-shrink: 0;
+        }
+
+        .bot-icon {
+            width: 58px;
+            height: 58px;
+
+            margin:
+                0
+                auto
+                10px;
+
+            border-radius: 17px;
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+
+            font-size: 27px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #16baf5,
+                    #4269ff
+                );
+
+            box-shadow:
+                0 0 30px
+                rgba(
+                    31,
+                    181,
+                    255,
+                    0.22
+                );
+        }
+
+        .top h1 {
+            font-size: 30px;
+
+            font-weight: 800;
+
+            margin-bottom: 6px;
+        }
+
+        .top h1 span {
+            color: #25bfff;
+        }
+
+        .top p {
+            color: #9aa9c0;
+
+            font-size: 13px;
+
+            max-width: 720px;
+
+            margin: auto;
+
+            line-height: 1.5;
+        }
+
+
+        /* =====================================================
+           QUICK ACTIONS
+           ===================================================== */
+
+        .quick-actions {
+            display: grid;
+
+            grid-template-columns:
+                repeat(4, 1fr);
+
+            gap: 12px;
+
+            padding:
+                0
+                40px
+                10px;
+
+            flex-shrink: 0;
+        }
+
+        .quick-btn {
+            border:
+                1px solid
+                #1b2941;
+
+            background:
+                linear-gradient(
+                    145deg,
+                    #121c31,
+                    #0e1729
+                );
+
+            color: #ffffff;
+
+            border-radius: 13px;
+
+            padding: 13px;
+
+            text-align: left;
+
+            cursor: pointer;
+
+            min-height: 70px;
+
+            transition: 0.2s ease;
+        }
+
+        .quick-btn:hover {
+            transform: translateY(-2px);
+
+            border-color: #249ee8;
+        }
+
+        .quick-icon {
+            font-size: 17px;
+            margin-bottom: 5px;
+        }
+
+        .quick-title {
+            font-size: 13px;
+            font-weight: 700;
+
+            margin-bottom: 3px;
+        }
+
+        .quick-text {
+            color: #8291a9;
+
+            font-size: 10px;
+
+            line-height: 1.4;
+        }
+
+
+        /* =====================================================
+           CHAT
+           ===================================================== */
+
+        .chat-section {
+            flex: 1;
+
+            min-height: 0;
+
+            padding:
+                0
+                40px
+                15px;
+
+            display: flex;
+
+            flex-direction: column;
+        }
+
+        .chat-header {
+            display: flex;
+
+            align-items: center;
+
+            gap: 10px;
+
+            padding:
+                8px
+                4px;
+
+            flex-shrink: 0;
+        }
+
+        .chat-header-icon {
+            width: 34px;
+            height: 34px;
+
+            border-radius: 10px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #1d9ee8,
+                    #4164e8
+                );
+
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .chat-header-title {
+            font-size: 14px;
+            font-weight: 750;
+        }
+
+        .chat-header-sub {
+            color: #71819a;
+
+            font-size: 10px;
+
+            margin-top: 2px;
+        }
+
+        .clear-btn {
+            margin-left: auto;
+
+            border:
+                1px solid
+                #24344f;
+
+            background: #0d1627;
+
+            color: #8fa0b9;
+
+            border-radius: 8px;
+
+            padding:
+                7px
+                11px;
+
+            cursor: pointer;
+
+            font-size: 11px;
+        }
+
+        .clear-btn:hover {
+            color: #ffffff;
+
+            border-color: #2a9fe8;
+        }
+
+
+        /* =====================================================
+           MESSAGES
+           ===================================================== */
+
+        .chat-messages {
+            flex: 1;
+
+            min-height: 0;
+
+            overflow-y: auto;
+
+            padding:
+                8px
+                10px
+                16px;
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: #24344e;
+
+            border-radius: 10px;
+        }
+
+        .message-row {
+            display: flex;
+
+            width: 100%;
+
+            margin-bottom: 14px;
+        }
+
+        .message-row.user {
+            justify-content: flex-end;
+        }
+
+        .message-row.assistant {
+            justify-content: flex-start;
+        }
+
+        .message-content {
+            display: flex;
+
+            align-items: flex-end;
+
+            gap: 8px;
+
+            max-width: 82%;
+        }
+
+        .message-row.user
+        .message-content {
+            flex-direction: row-reverse;
+        }
+
+        .avatar {
+            width: 31px;
+            height: 31px;
+
+            min-width: 31px;
+
+            border-radius: 9px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+
+            font-size: 13px;
+        }
+
+        .assistant .avatar {
+            background:
+                linear-gradient(
+                    135deg,
+                    #1b9de5,
+                    #3f63e7
+                );
+        }
+
+        .user .avatar {
+            background:
+                linear-gradient(
+                    135deg,
+                    #13aeea,
+                    #257be9
+                );
+        }
+
+
+        /*
+        IMPORTANT:
+        No fixed height.
+        Short answer = short bubble.
+        Long answer = longer bubble.
+        */
+
+        .bubble {
+            display: inline-block;
+
+            width: fit-content;
+
+            max-width:
+                min(
+                    720px,
+                    calc(100vw - 360px)
+                );
+
+            height: auto;
+
+            min-height: 0;
+
+            padding:
+                10px
+                14px;
+
+            border-radius: 15px;
+
+            font-size: 14px;
+
+            line-height: 1.55;
+
+            white-space: pre-wrap;
+
+            overflow-wrap: anywhere;
+
+            word-break: break-word;
+        }
+
+        .assistant .bubble {
+            background:
+                linear-gradient(
+                    145deg,
+                    #16243b,
+                    #111c30
+                );
+
+            border:
+                1px solid
+                #1d2e49;
+
+            color: #e5edf8;
+
+            border-top-left-radius: 5px;
+        }
+
+        .user .bubble {
+            background:
+                linear-gradient(
+                    145deg,
+                    #149be7,
+                    #267fe7
+                );
+
+            color: #ffffff;
+
+            border:
+                1px solid
+                rgba(
+                    98,
+                    196,
+                    255,
+                    0.35
+                );
+
+            border-top-right-radius: 5px;
+        }
+
+        .message-label {
+            font-size: 10px;
+
+            color: #667892;
+
+            margin-bottom: 4px;
+
+            font-weight: 600;
+        }
+
+        .user .message-label {
+            text-align: right;
+        }
+
+
+        /* =====================================================
+           WELCOME
+           ===================================================== */
+
+        .welcome {
+            min-height: 130px;
+
+            display: flex;
+
+            align-items: center;
+
+            justify-content: center;
+
+            text-align: center;
+
+            padding: 25px;
+        }
+
+        .welcome-inner {
+            max-width: 500px;
+        }
+
+        .welcome-title {
+            color: #dce7f5;
+
+            font-size: 16px;
+
+            font-weight: 700;
+
+            margin-bottom: 7px;
+        }
+
+        .welcome-text {
+            color: #74849d;
+
+            font-size: 12px;
+
+            line-height: 1.6;
+        }
+
+
+        /* =====================================================
+           TYPING
+           ===================================================== */
+
+        .typing {
+            display: none;
+
+            align-items: center;
+
+            gap: 8px;
+
+            margin:
+                2px
+                0
+                9px
+                40px;
+        }
+
+        .typing.visible {
+            display: flex;
+        }
+
+        .typing-avatar {
+            width: 31px;
+            height: 31px;
+
+            border-radius: 9px;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #1b9de5,
+                    #3f63e7
+                );
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+        }
+
+        .typing-dots {
+            display: flex;
+
+            gap: 4px;
+
+            padding:
+                10px
+                12px;
+
+            background: #16243b;
+
+            border:
+                1px solid
+                #1d2e49;
+
+            border-radius: 12px;
+        }
+
+        .typing-dots span {
+            width: 5px;
+            height: 5px;
+
+            border-radius: 50%;
+
+            background: #6d88aa;
+
+            animation:
+                blink
+                1.2s
+                infinite;
+        }
+
+        .typing-dots span:nth-child(2) {
+            animation-delay: .2s;
+        }
+
+        .typing-dots span:nth-child(3) {
+            animation-delay: .4s;
+        }
+
+        @keyframes blink {
+
+            0%,
+            60%,
+            100% {
+                opacity: .3;
+            }
+
+            30% {
+                opacity: 1;
+            }
+        }
+
+
+        /* =====================================================
+           INPUT
+           ===================================================== */
+
+        .input-area {
+            flex-shrink: 0;
+
+            padding-top: 5px;
+        }
+
+        .input-box {
+            display: flex;
+
+            align-items: flex-end;
+
+            gap: 10px;
+
+            background: #0d1627;
+
+            border:
+                1px solid
+                #1d2c45;
+
+            border-radius: 15px;
+
+            padding:
+                8px
+                9px
+                8px
+                14px;
+        }
+
+        .input-box:focus-within {
+            border-color: #249fe8;
+
+            box-shadow:
+                0 0 0 2px
+                rgba(
+                    36,
+                    159,
+                    232,
+                    0.08
+                );
+        }
+
+        #messageInput {
+            flex: 1;
+
+            min-width: 0;
+
+            max-height: 120px;
+
+            resize: none;
+
+            overflow-y: auto;
+
+            border: none;
+
+            outline: none;
+
+            background: transparent;
+
+            color: #ffffff;
+
+            font-family: inherit;
+
+            font-size: 14px;
+
+            line-height: 1.5;
+
+            padding: 7px 0;
+        }
+
+        #messageInput::placeholder {
+            color: #5f708a;
+        }
+
+        .send-btn {
+            width: 42px;
+            height: 42px;
+
+            min-width: 42px;
+
+            border: none;
+
+            border-radius: 11px;
+
+            cursor: pointer;
+
+            background:
+                linear-gradient(
+                    135deg,
+                    #19b8f5,
+                    #3d70ef
+                );
+
+            color: #ffffff;
+
+            font-size: 18px;
+
+            display: flex;
+
+            align-items: center;
+            justify-content: center;
+        }
+
+        .send-btn:disabled {
+            opacity: .45;
+
+            cursor: not-allowed;
+        }
+
+        .input-note {
+            text-align: center;
+
+            color: #52637b;
+
+            font-size: 10px;
+
+            padding-top: 6px;
+        }
+
+
+        /* =====================================================
+           RESPONSIVE
+           ===================================================== */
+
+        @media (max-width: 1000px) {
+
+            .sidebar {
+                width: 210px;
+                min-width: 210px;
+            }
+
+            .quick-actions {
+                grid-template-columns:
+                    repeat(2, 1fr);
+            }
+
+            .top,
+            .quick-actions,
+            .chat-section {
+                padding-left: 24px;
+                padding-right: 24px;
+            }
+        }
+
+
+        @media (max-width: 700px) {
+
+            .sidebar {
+                display: none;
+            }
+
+            .top {
+                padding:
+                    18px
+                    14px
+                    10px;
+            }
+
+            .top h1 {
+                font-size: 25px;
+            }
+
+            .quick-actions {
+                grid-template-columns:
+                    repeat(2, 1fr);
+
+                padding:
+                    0
+                    14px
+                    10px;
+            }
+
+            .chat-section {
+                padding:
+                    0
+                    12px
+                    12px;
+            }
+
+            .message-content {
+                max-width: 92%;
+            }
+
+            .bubble {
+                max-width:
+                    calc(
+                        100vw - 85px
+                    );
+
+                font-size: 13px;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="app">
+
+
+    <!-- =====================================================
+         SIDEBAR
+         ===================================================== -->
+
+    <aside class="sidebar">
+
+        <div class="logo">
+
+            <div class="logo-icon">
+                ✦
+            </div>
+
+            <div class="logo-text">
+                AI <span>Career</span>
+            </div>
+
+        </div>
+
+
+        <nav class="nav">
+
+            <a href="{{ url_for('dashboard') }}">
+
+                <span class="nav-icon">
+                    🏠
+                </span>
+
+                <span>
+                    Dashboard
+                </span>
+
+            </a>
+
+
+            <a href="{{ url_for('dashboard') }}">
+
+                <span class="nav-icon">
+                    📄
+                </span>
+
+                <span>
+                    My Resume
+                </span>
+
+            </a>
+
+
+            <a href="{{ url_for('job_match') }}">
+
+                <span class="nav-icon">
+                    💼
+                </span>
+
+                <span>
+                    Job Match
+                </span>
+
+            </a>
+
+
+            <a
+                href="{{ url_for('chatbot') }}"
+                class="active"
+            >
+
+                <span class="nav-icon">
+                    🤖
+                </span>
+
+                <span>
+                    AI Chatbot
+                </span>
+
+            </a>
+
+
+            <a href="{{ url_for('settings') }}">
+
+                <span class="nav-icon">
+                    ⚙️
+                </span>
+
+                <span>
+                    Settings
+                </span>
+
+            </a>
+
+
+            <a href="{{ url_for('logout') }}">
+
+                <span class="nav-icon">
+                    🚪
+                </span>
+
+                <span>
+                    Logout
+                </span>
+
+            </a>
+
+        </nav>
+
+    </aside>
+
+
+
+    <!-- =====================================================
+         MAIN
+         ===================================================== -->
+
+    <main class="main">
+
+
+        <section class="top">
+
+            <div class="bot-icon">
+                🤖
+            </div>
+
+            <h1>
+                Your
+                <span>
+                    AI Career Assistant
+                </span>
+            </h1>
+
+            <p>
+                Ask me anything about your resume, projects,
+                skills, career, jobs, interviews, technical
+                learning, portfolio and professional growth.
+            </p>
+
+        </section>
+
+
+
+        <!-- QUICK ACTIONS -->
+
+        <section class="quick-actions">
+
+
+            <button
+                class="quick-btn"
+                type="button"
+                onclick="sendQuickMessage(
+                    'What projects are listed in my resume?'
+                )"
+            >
+
+                <div class="quick-icon">
+                    📄
+                </div>
+
+                <div class="quick-title">
+                    My Projects
+                </div>
+
+                <div class="quick-text">
+                    See the projects listed in your resume
+                </div>
+
+            </button>
+
+
+            <button
+                class="quick-btn"
+                type="button"
+                onclick="sendQuickMessage(
+                    'What technical skills are listed in my resume?'
+                )"
+            >
+
+                <div class="quick-icon">
+                    💬
+                </div>
+
+                <div class="quick-title">
+                    My Skills
+                </div>
+
+                <div class="quick-text">
+                    Understand your current technical skills
+                </div>
+
+            </button>
+
+
+            <button
+                class="quick-btn"
+                type="button"
+                onclick="sendQuickMessage(
+                    'What should I learn next for my career based on my resume?'
+                )"
+            >
+
+                <div class="quick-icon">
+                    🚀
+                </div>
+
+                <div class="quick-title">
+                    Career Roadmap
+                </div>
+
+                <div class="quick-text">
+                    Plan your next learning steps
+                </div>
+
+            </button>
+
+
+            <button
+                class="quick-btn"
+                type="button"
+                onclick="sendQuickMessage(
+                    'Prepare me for an interview based on my resume.'
+                )"
+            >
+
+                <div class="quick-icon">
+                    🎯
+                </div>
+
+                <div class="quick-title">
+                    Interview Prep
+                </div>
+
+                <div class="quick-text">
+                    Prepare for technical interviews
+                </div>
+
+            </button>
+
+
+        </section>
+
+
+
+        <!-- CHAT -->
+
+        <section class="chat-section">
+
+
+            <div class="chat-header">
+
+                <div class="chat-header-icon">
+                    ✦
+                </div>
+
+                <div>
+
+                    <div class="chat-header-title">
+                        AI Career Assistant
+                    </div>
+
+                    <div class="chat-header-sub">
+                        Latest resume • Open-ended AI
+                    </div>
+
+                </div>
+
+
+                <button
+                    class="clear-btn"
+                    type="button"
+                    onclick="clearChat()"
+                >
+                    Clear chat
+                </button>
+
+            </div>
+
+
+
+            <div
+                class="chat-messages"
+                id="chatMessages"
+            >
+
+                <div
+                    class="welcome"
+                    id="welcomeMessage"
+                >
+
+                    <div class="welcome-inner">
+
+                        <div class="welcome-title">
+                            Hi! 👋 I'm your AI Career Assistant.
+                        </div>
+
+                        <div class="welcome-text">
+                            Ask me naturally about your resume,
+                            projects, skills, career, interviews,
+                            jobs or technical topics.
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+
+
+
+            <div
+                class="typing"
+                id="typingIndicator"
+            >
+
+                <div class="typing-avatar">
+                    🤖
+                </div>
+
+                <div class="typing-dots">
+
+                    <span></span>
+                    <span></span>
+                    <span></span>
+
+                </div>
+
+            </div>
+
+
+
+            <div class="input-area">
+
+                <div class="input-box">
+
+                    <textarea
+                        id="messageInput"
+                        rows="1"
+                        placeholder="Ask anything..."
+                    ></textarea>
+
+
+                    <button
+                        class="send-btn"
+                        id="sendButton"
+                        type="button"
+                        onclick="sendMessage()"
+                    >
+                        ➤
+                    </button>
+
+                </div>
+
+
+                <div class="input-note">
+                    AI Career Assistant can make mistakes.
+                    Verify important information.
+                </div>
+
+            </div>
+
+
+        </section>
+
+
+    </main>
+
+</div>
+
+
+
+<script>
+
+
+    /* =====================================================
+       STATE
+       ===================================================== */
+
+    let currentConversation = [];
+
+    let isSending = false;
+
+
+    const messageInput =
+        document.getElementById(
+            "messageInput"
+        );
+
+
+    const sendButton =
+        document.getElementById(
+            "sendButton"
+        );
+
+
+    const chatMessages =
+        document.getElementById(
+            "chatMessages"
+        );
+
+
+    const typingIndicator =
+        document.getElementById(
+            "typingIndicator"
+        );
+
+
+    /* =====================================================
+       INPUT RESIZE
+       ===================================================== */
+
+    function resizeInput() {
+
+        messageInput.style.height =
+            "auto";
+
+        messageInput.style.height =
+            Math.min(
+                messageInput.scrollHeight,
+                120
+            ) + "px";
+    }
+
+
+    messageInput.addEventListener(
+        "input",
+        resizeInput
+    );
+
+
+    /* =====================================================
+       ENTER TO SEND
+       SHIFT + ENTER = NEW LINE
+       ===================================================== */
+
+    messageInput.addEventListener(
+        "keydown",
+        function(event) {
+
+            if (
+                event.key === "Enter"
+                &&
+                !event.shiftKey
+            ) {
+
+                event.preventDefault();
+
+                sendMessage();
+            }
+
+        }
+    );
+
+
+    /* =====================================================
+       ADD MESSAGE
+       ===================================================== */
+
+    function addMessage(
+        role,
+        text
+    ) {
+
+        const welcome =
+            document.getElementById(
+                "welcomeMessage"
+            );
+
+        if (welcome) {
+            welcome.remove();
+        }
+
+
+        const row =
+            document.createElement(
+                "div"
+            );
+
+        row.className =
+            "message-row " + role;
+
+
+        const content =
+            document.createElement(
+                "div"
+            );
+
+        content.className =
+            "message-content";
+
+
+        const avatar =
+            document.createElement(
+                "div"
+            );
+
+        avatar.className =
+            "avatar";
+
+        avatar.textContent =
+            role === "user"
+                ? "👤"
+                : "🤖";
+
+
+        const wrapper =
+            document.createElement(
+                "div"
+            );
+
+
+        const label =
+            document.createElement(
+                "div"
+            );
+
+        label.className =
+            "message-label";
+
+        label.textContent =
+            role === "user"
+                ? "You"
+                : "AI Career Assistant";
+
+
+        const bubble =
+            document.createElement(
+                "div"
+            );
+
+        bubble.className =
+            "bubble";
+
+        bubble.textContent =
+            text;
+
+
+        wrapper.appendChild(
+            label
+        );
+
+        wrapper.appendChild(
+            bubble
+        );
+
+
+        content.appendChild(
+            avatar
+        );
+
+        content.appendChild(
+            wrapper
+        );
+
+
+        row.appendChild(
+            content
+        );
+
+
+        chatMessages.appendChild(
+            row
+        );
+
+
+        chatMessages.scrollTop =
+            chatMessages.scrollHeight;
+    }
+
+
+    /* =====================================================
+       QUICK MESSAGE
+       ===================================================== */
+
+    function sendQuickMessage(
+        message
+    ) {
+
+        if (isSending) {
+            return;
+        }
+
+        messageInput.value =
+            message;
+
+        resizeInput();
+
+        sendMessage();
+    }
+
+
+    /* =====================================================
+       SEND MESSAGE
+       ===================================================== */
+
+    async function sendMessage() {
+
+        if (isSending) {
+            return;
+        }
+
+
+        const message =
+            messageInput.value.trim();
+
+
+        if (!message) {
+            return;
+        }
+
+
+        isSending = true;
+
+        sendButton.disabled =
+            true;
+
+
+        /*
+        Add user's message visually.
+        */
+
+        addMessage(
+            "user",
+            message
+        );
+
+
+        /*
+        Keep the current conversation
+        in browser memory only.
+        */
+
+        currentConversation.push({
+
+            role: "user",
+
+            message: message
+
+        });
+
+
+        /*
+        Keep only recent context.
+        */
+
+        currentConversation =
+            currentConversation.slice(-12);
+
+
+        messageInput.value =
+            "";
+
+        resizeInput();
+
+
+        typingIndicator.classList.add(
+            "visible"
+        );
+
+
+        try {
+
+            /*
+            Send previous conversation
+            separately.
+
+            The backend also receives
+            the current question.
+            */
+
+            const previousConversation =
+                currentConversation
+                    .slice(0, -1)
+                    .slice(-10);
+
+
+            const response =
+                await fetch(
+                    "{{ url_for('chatbot_api') }}",
+                    {
+                        method: "POST",
+
+                        headers: {
+                            "Content-Type":
+                                "application/json"
+                        },
+
+                        body:
+                            JSON.stringify({
+
+                                message:
+                                    message,
+
+                                conversation:
+                                    previousConversation
+
+                            })
+                    }
+                );
+
+
+            let data = {};
+
+            try {
+
+                data =
+                    await response.json();
+
+            }
+            catch (jsonError) {
+
+                data = {};
+
+            }
+
+
+            typingIndicator.classList.remove(
+                "visible"
+            );
+
+
+            if (
+                !response.ok
+                ||
+                !data.success
+            ) {
+
+                const errorMessage =
+                    data.message
+                    ||
+                    data.error
+                    ||
+                    "The AI service could not process your request.";
+
+                addMessage(
+                    "assistant",
+                    errorMessage
+                );
+
+                return;
+            }
+
+
+            const answer =
+                data.message
+                ||
+                "I couldn't generate a response right now.";
+
+
+            addMessage(
+                "assistant",
+                answer
+            );
+
+
+            currentConversation.push({
+
+                role: "assistant",
+
+                message: answer
+
+            });
+
+
+            currentConversation =
+                currentConversation.slice(-12);
+
+
+        }
+        catch (error) {
+
+            typingIndicator.classList.remove(
+                "visible"
+            );
+
+
+            addMessage(
+                "assistant",
+                "I couldn't reach the chatbot server. Please make sure Flask is running and try again."
+            );
+
+        }
+        finally {
+
+            isSending = false;
+
+            sendButton.disabled =
+                false;
+
+            messageInput.focus();
+
+        }
+
+    }
+
+
+    /* =====================================================
+       CLEAR CHAT
+       ===================================================== */
+
+    async function clearChat() {
+
+        if (isSending) {
+            return;
+        }
+
+
+        currentConversation = [];
+
+
+        chatMessages.innerHTML = `
+
+            <div
+                class="welcome"
+                id="welcomeMessage"
+            >
+
+                <div class="welcome-inner">
+
+                    <div class="welcome-title">
+                        Hi! 👋 I'm your AI Career Assistant.
+                    </div>
+
+                    <div class="welcome-text">
+                        Ask me naturally about your resume,
+                        projects, skills, career, interviews,
+                        jobs or technical topics.
+                    </div>
+
+                </div>
+
+            </div>
+
+        `;
+
+
+        try {
+
+            await fetch(
+                "{{ url_for('clear_chat_history') }}",
+                {
+                    method: "POST",
+
+                    headers: {
+                        "Content-Type":
+                            "application/json"
+                    }
+                }
+            );
+
+        }
+        catch (error) {
+
+            /*
+            The visible conversation
+            is already cleared.
+            */
+
+        }
+
+
+        messageInput.focus();
+    }
+
+
+    /*
+    Focus input when page loads.
+    */
+
+    window.addEventListener(
+        "load",
+        function() {
+
+            messageInput.focus();
+
+        }
+    );
+
+</script>
+
+
+</body>
+
+</html>

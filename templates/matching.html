@@ -1,0 +1,821 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Candidate Matching</title>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Arial, sans-serif;
+        }
+
+        body {
+            background: #081120;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            width: 100%;
+            padding: 15px 35px;
+            background: #111827;
+
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #38bdf8;
+        }
+
+        .menu {
+            display: flex;
+            gap: 12px;
+        }
+
+        .menu a {
+            text-decoration: none;
+            color: white;
+
+            padding: 8px 14px;
+
+            border-radius: 10px;
+
+            background: #2563eb;
+
+            font-size: 14px;
+        }
+
+        .header {
+            padding: 35px 8%;
+
+            background: linear-gradient(
+                135deg,
+                #0f172a,
+                #1e3a8a,
+                #7c3aed
+            );
+        }
+
+        .header h1 {
+            font-size: 34px;
+            margin-bottom: 8px;
+        }
+
+        .header p {
+            color: #dbeafe;
+            font-size: 14px;
+        }
+
+        .container {
+            width: 92%;
+            margin: auto;
+            margin-top: 25px;
+            padding-bottom: 40px;
+        }
+
+        /* SEARCH */
+
+        .search-box {
+            margin-bottom: 22px;
+        }
+
+        .search-box input {
+            width: 100%;
+
+            padding: 14px 18px;
+
+            border: none;
+            outline: none;
+
+            border-radius: 12px;
+
+            background: #111827;
+
+            color: white;
+
+            font-size: 14px;
+        }
+
+        .search-box input::placeholder {
+            color: #94a3b8;
+        }
+
+        /* STATS */
+
+        .stats {
+            display: grid;
+
+            grid-template-columns:
+                repeat(auto-fit, minmax(210px, 1fr));
+
+            gap: 18px;
+
+            margin-bottom: 25px;
+        }
+
+        .stat-card {
+            background: rgba(255,255,255,0.08);
+
+            border-radius: 18px;
+
+            padding: 20px;
+        }
+
+        .stat-card h3 {
+            color: #93c5fd;
+
+            margin-bottom: 10px;
+
+            font-size: 15px;
+        }
+
+        .stat-card p {
+            font-size: 27px;
+
+            font-weight: bold;
+        }
+
+        /* TABLE */
+
+        .table-box {
+            background: rgba(255,255,255,0.08);
+
+            border-radius: 20px;
+
+            padding: 20px;
+
+            overflow-x: auto;
+
+            margin-bottom: 25px;
+        }
+
+        .table-box h2 {
+            margin-bottom: 18px;
+
+            font-size: 20px;
+        }
+
+        table {
+            width: 100%;
+
+            border-collapse: collapse;
+        }
+
+        th {
+            background: #1e293b;
+
+            padding: 13px;
+
+            color: #93c5fd;
+
+            text-align: left;
+
+            font-size: 13px;
+        }
+
+        td {
+            padding: 13px;
+
+            border-bottom: 1px solid #334155;
+
+            font-size: 13px;
+        }
+
+        /* MATCH STATUS */
+
+        .high {
+            color: #22c55e;
+            font-weight: bold;
+        }
+
+        .medium {
+            color: #facc15;
+            font-weight: bold;
+        }
+
+        .low {
+            color: #ef4444;
+            font-weight: bold;
+        }
+
+        .score {
+            font-weight: bold;
+        }
+
+        /* CHARTS */
+
+        .charts {
+            display: grid;
+
+            grid-template-columns:
+                repeat(auto-fit, minmax(320px, 1fr));
+
+            gap: 20px;
+        }
+
+        .chart-box {
+            background: rgba(255,255,255,0.08);
+
+            border-radius: 20px;
+
+            padding: 20px;
+        }
+
+        .chart-box h2 {
+            margin-bottom: 15px;
+
+            font-size: 18px;
+        }
+
+        canvas {
+            max-height: 300px;
+        }
+
+        /* EMPTY */
+
+        .empty {
+            text-align: center;
+
+            padding: 30px;
+
+            color: #94a3b8;
+        }
+
+        /* RESPONSIVE */
+
+        @media(max-width: 700px) {
+
+            .navbar {
+                padding: 15px;
+            }
+
+            .menu {
+                gap: 5px;
+            }
+
+            .menu a {
+                padding: 7px 9px;
+                font-size: 12px;
+            }
+
+            .header {
+                padding: 30px 5%;
+            }
+
+            .header h1 {
+                font-size: 27px;
+            }
+
+            .container {
+                width: 94%;
+            }
+
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<!-- NAVBAR -->
+
+<div class="navbar">
+
+    <div class="logo">
+        AI Resume Analyzer
+    </div>
+
+    <div class="menu">
+
+        <a href="/">Home</a>
+
+        <a href="/admin">Admin</a>
+
+        <a href="/analytics">Analytics</a>
+
+        <a href="/ats-report">ATS Reports</a>
+
+        <a href="/recruiters">Recruiters</a>
+
+    </div>
+
+</div>
+
+
+<!-- HEADER -->
+
+<div class="header">
+
+    <h1>
+        Candidate Matching System
+    </h1>
+
+    <p>
+        AI based candidate ranking and resume matching dashboard
+    </p>
+
+</div>
+
+
+<div class="container">
+
+
+    <!-- SEARCH -->
+
+    <div class="search-box">
+
+        <input
+            type="text"
+            id="candidateSearch"
+            placeholder="Search candidate name or skill..."
+            onkeyup="searchCandidates()"
+        >
+
+    </div>
+
+
+    <!-- STATISTICS -->
+
+    <div class="stats">
+
+
+        <div class="stat-card">
+
+            <h3>
+                Total Candidates
+            </h3>
+
+            <p>
+                {{ candidates|length }}
+            </p>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <h3>
+                High Match
+            </h3>
+
+            <p>
+                {{ high_match }}
+            </p>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <h3>
+                Average ATS
+            </h3>
+
+            <p>
+                {{ average_ats }}%
+            </p>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <h3>
+                Medium Match
+            </h3>
+
+            <p>
+                {{ medium_match }}
+            </p>
+
+        </div>
+
+
+        <div class="stat-card">
+
+            <h3>
+                Low Match
+            </h3>
+
+            <p>
+                {{ low_match }}
+            </p>
+
+        </div>
+
+
+    </div>
+
+
+    <!-- CANDIDATE TABLE -->
+
+    <div class="table-box">
+
+        <h2>
+            Top Candidate Matches
+        </h2>
+
+
+        <table id="candidateTable">
+
+            <thead>
+
+                <tr>
+
+                    <th>
+                        Name
+                    </th>
+
+                    <th>
+                        ATS Score
+                    </th>
+
+                    <th>
+                        Match %
+                    </th>
+
+                    <th>
+                        Skills
+                    </th>
+
+                    <th>
+                        Status
+                    </th>
+
+                </tr>
+
+            </thead>
+
+
+            <tbody>
+
+
+                {% for candidate in candidates %}
+
+                <tr class="candidate-row">
+
+
+                    <!-- NAME -->
+
+                    <td class="candidate-name">
+
+                        {{ candidate[0] }}
+
+                    </td>
+
+
+                    <!-- ATS SCORE -->
+
+                    <td class="score">
+
+                        {{ candidate[1] }}%
+
+                    </td>
+
+
+                    <!-- MATCH SCORE -->
+
+                    <td class="score">
+
+                        {{ candidate[2] }}%
+
+                    </td>
+
+
+                    <!-- SKILLS -->
+
+                    <td class="candidate-skills">
+
+                        {% if candidate[3] %}
+
+                            {{ candidate[3] }}
+
+                        {% else %}
+
+                            No skills detected
+
+                        {% endif %}
+
+                    </td>
+
+
+                    <!-- MATCH STATUS -->
+
+                    <td>
+
+                        {% if candidate[2] >= 70 %}
+
+                            <span class="high">
+                                High Match
+                            </span>
+
+                        {% elif candidate[2] >= 50 %}
+
+                            <span class="medium">
+                                Medium Match
+                            </span>
+
+                        {% else %}
+
+                            <span class="low">
+                                Low Match
+                            </span>
+
+                        {% endif %}
+
+                    </td>
+
+
+                </tr>
+
+                {% else %}
+
+                <tr>
+
+                    <td colspan="5" class="empty">
+
+                        No candidates available.
+
+                    </td>
+
+                </tr>
+
+                {% endfor %}
+
+
+            </tbody>
+
+        </table>
+
+    </div>
+
+
+    <!-- CHARTS -->
+
+    <div class="charts">
+
+
+        <!-- MATCH CHART -->
+
+        <div class="chart-box">
+
+            <h2>
+                Candidate Match Analysis
+            </h2>
+
+            <canvas id="matchChart"></canvas>
+
+        </div>
+
+
+        <!-- ATS CHART -->
+
+        <div class="chart-box">
+
+            <h2>
+                ATS Distribution
+            </h2>
+
+            <canvas id="atsChart"></canvas>
+
+        </div>
+
+
+    </div>
+
+
+</div>
+
+
+<script>
+
+
+/* ==============================
+   REAL DATABASE DATA
+   ============================== */
+
+const candidateNames = [
+
+    {% for candidate in candidates %}
+
+        {{ candidate[0]|tojson }}
+
+        {% if not loop.last %},{% endif %}
+
+    {% endfor %}
+
+];
+
+
+const matchScores = [
+
+    {% for candidate in candidates %}
+
+        {{ candidate[2]|int }}
+
+        {% if not loop.last %},{% endif %}
+
+    {% endfor %}
+
+];
+
+
+const atsScores = [
+
+    {% for candidate in candidates %}
+
+        {{ candidate[1]|int }}
+
+        {% if not loop.last %},{% endif %}
+
+    {% endfor %}
+
+];
+
+
+/* ==============================
+   MATCH SCORE CHART
+   ============================== */
+
+const matchCtx =
+    document.getElementById('matchChart');
+
+
+new Chart(matchCtx, {
+
+    type: 'line',
+
+    data: {
+
+        labels: candidateNames,
+
+        datasets: [{
+
+            label: 'Match Score',
+
+            data: matchScores,
+
+            borderColor: '#38bdf8',
+
+            backgroundColor: 'rgba(56,189,248,0.2)',
+
+            fill: true,
+
+            tension: 0.4
+
+        }]
+
+    },
+
+    options: {
+
+        responsive: true,
+
+        scales: {
+
+            y: {
+
+                beginAtZero: true,
+
+                max: 100
+
+            }
+
+        }
+
+    }
+
+});
+
+
+/* ==============================
+   ATS SCORE CHART
+   ============================== */
+
+const atsCtx =
+    document.getElementById('atsChart');
+
+
+new Chart(atsCtx, {
+
+    type: 'bar',
+
+    data: {
+
+        labels: candidateNames,
+
+        datasets: [{
+
+            label: 'ATS Score',
+
+            data: atsScores,
+
+            backgroundColor: [
+
+                '#38bdf8',
+                '#2563eb',
+                '#7c3aed',
+                '#06b6d4',
+                '#22c55e',
+                '#f97316'
+
+            ]
+
+        }]
+
+    },
+
+    options: {
+
+        responsive: true,
+
+        scales: {
+
+            y: {
+
+                beginAtZero: true,
+
+                max: 100
+
+            }
+
+        }
+
+    }
+
+});
+
+
+/* ==============================
+   SEARCH
+   ============================== */
+
+function searchCandidates() {
+
+    const input =
+        document
+        .getElementById('candidateSearch')
+        .value
+        .toLowerCase();
+
+    const rows =
+        document.querySelectorAll('.candidate-row');
+
+
+    rows.forEach(function(row) {
+
+        const name =
+            row
+            .querySelector('.candidate-name')
+            .textContent
+            .toLowerCase();
+
+        const skills =
+            row
+            .querySelector('.candidate-skills')
+            .textContent
+            .toLowerCase();
+
+
+        if (
+            name.includes(input) ||
+            skills.includes(input)
+        ) {
+
+            row.style.display = '';
+
+        } else {
+
+            row.style.display = 'none';
+
+        }
+
+    });
+
+}
+
+
+</script>
+
+
+</body>
+
+</html>
